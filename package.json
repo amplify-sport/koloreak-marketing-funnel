@@ -1,0 +1,31 @@
+{
+  "name": "koloreak-marketing-funnel",
+  "version": "1.0.0",
+  "description": "Funnel marketing automatisé pour le salon de coiffure Koloreak : génération de contenu IA et publication Instagram via Firebase & Gemini",
+  "main": "injecteur-clients.js",
+  "scripts": {
+    "test:prompt": "node scripts/test-gemini-prompt.js",
+    "test:instagram": "node scripts/get-instagram-token.js",
+    "post:manual": "node scripts/upload-instagram-post.js",
+    "inject:clients": "node injecteur-clients.js",
+    "deploy:functions": "firebase deploy --only functions",
+    "deploy:firestore": "firebase deploy --only firestore",
+    "deploy:all": "firebase deploy"
+  },
+  "dependencies": {
+    "firebase-admin": "^13.10.0"
+  },
+  "devDependencies": {
+    "dotenv": "^16.4.7"
+  },
+  "keywords": [
+    "koloreak",
+    "coiffure",
+    "marketing-funnel",
+    "instagram-automation",
+    "firebase-functions",
+    "gemini-ai"
+  ],
+  "author": "VibeCoder & Koloreak",
+  "license": "ISC"
+}

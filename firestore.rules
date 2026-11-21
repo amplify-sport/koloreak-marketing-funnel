@@ -1,0 +1,232 @@
+rules_version = '2';
+
+// ===============================================================
+// Assumed Data Model
+// ===============================================================
+//
+// Collection: instagram_posts/{postId}
+// Document ID: Auto-generated or custom post ID
+// Fields:
+//   - caption: string (required, 1-2200 chars) - Instagram post text
+//   - imageUrl: string (optional, 1-1000 chars, valid http/https URL) - Media URL
+//   - hashtags: list (optional, max 30 items) - Associated hashtags
+//   - status: string (required, ['brouillon', 'publie', 'erreur_publication']) - Publication state
+//   - publicationDate: timestamp (optional) - Scheduled publication date
+//   - publishedAt: timestamp (optional) - Actual publication timestamp
+//   - instagramMediaId: string (optional, 1-100 chars) - ID returned by Instagram API
+//   - errorMessage: string (optional, 1-500 chars) - Error log if publication failed
+//   - authorId: string (optional, 1-128 chars) - UID of authoring staff member
+//   - createdAt: timestamp (required, immutable) - Document creation timestamp
+//   - updatedAt: timestamp (optional) - Last modification timestamp
+//
+// Collection: clients/{clientId}
+// Document ID: Auto-generated or custom client ID
+// Fields:
+//   - name: string (required, 1-100 chars) - Salon client's full name
+//   - phone: string (required, 6-25 chars) - Client contact phone number
+//   - email: string (optional, 5-100 chars, valid email) - Client email address
+//   - lastVisit: timestamp (required) - Date/time of most recent salon service
+//   - serviceType: string (required, 1-100 chars) - Coiffure/coloration/soin category
+//   - reminderStatus: string (required, ['en_attente', 'envoye', 'confirme', 'annule', 'aucun'])
+//   - notes: string (optional, 1-1000 chars) - Hair history, formula notes
+//   - createdAt: timestamp (required, immutable) - Registration timestamp
+//   - updatedAt: timestamp (optional) - Modification timestamp
+//
+// Collection: campaigns/{campaignId}
+// Document ID: Auto-generated or custom campaign ID
+// Fields:
+//   - name: string (required, 1-100 chars) - Campaign name
+//   - description: string (optional, 1-1000 chars) - Campaign goal & details
+//   - type: string (required, ['instagram', 'email', 'sms', 'promotion', 'autre'])
+//   - status: string (required, ['brouillon', 'active', 'terminee', 'suspendue', 'archivee'])
+//   - startDate: timestamp (required) - Launch date
+//   - endDate: timestamp (optional) - End date
+//   - targetAudience: string (optional, 1-200 chars) - Segmentation details
+//   - createdBy: string (optional, 1-128 chars) - Staff UID
+//   - createdAt: timestamp (required, immutable) - Creation timestamp
+//   - updatedAt: timestamp (optional) - Modification timestamp
+//
+// Collection: config/{configId}
+// Document ID: Identifier for internal configurations (e.g., 'instagram', 'gemini')
+// Fields:
+//   - Strictly internal API keys, tokens, settings
+//   - Client SDK access completely forbidden (Admin SDK only)
+//
+// ===============================================================
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===============================================================
+    // Helper Functions
+    // ===============================================================
+
+    // Verify user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Verify presence of required fields in resource payload
+    function hasRequiredFields(fields) {
+      return request.resource.data.keys().hasAll(fields);
+    }
+
+    // Enforce strict schema with no unexpected/polluted fields
+    function hasOnlyAllowedFields(fields) {
+      return request.resource.data.keys().hasOnly(fields);
+    }
+
+    // Validate string type and character length limits
+    function validStringLength(field, minLen, maxLen) {
+      return request.resource.data[field] is string &&
+        request.resource.data[field].size() >= minLen &&
+        request.resource.data[field].size() <= maxLen;
+    }
+
+    // Validate optional string type and character length limits
+    function isValidOptionalString(field, minLen, maxLen) {
+      return !(field in request.resource.data) ||
+        (request.resource.data[field] is string &&
+         request.resource.data[field].size() >= minLen &&
+         request.resource.data[field].size() <= maxLen);
+    }
+
+    // Validate URL format and length
+    function isValidUrl(url) {
+      return url is string &&
+        url.size() <= 1000 &&
+        (url.matches("^https://.*") || url.matches("^http://.*"));
+    }
+
+    // Validate email format and length
+    function isValidEmail(email) {
+      return email is string &&
+        email.size() <= 100 &&
+        email.matches("^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$");
+    }
+
+    // Validate immutable fields did not change on update
+    function areImmutableFieldsUnchanged(fields) {
+      return !request.resource.data.diff(resource.data).affectedKeys().hasAny(fields);
+    }
+
+    // ===============================================================
+    // Domain Validators
+    // ===============================================================
+
+    // Validator for instagram_posts collection
+    function isValidPost(data) {
+      let allowedFields = [
+        'caption', 'imageUrl', 'hashtags', 'status',
+        'publicationDate', 'publishedAt', 'instagramMediaId',
+        'errorMessage', 'authorId', 'createdAt', 'updatedAt'
+      ];
+      let validStatuses = ['brouillon', 'publie', 'erreur_publication'];
+
+      return hasOnlyAllowedFields(allowedFields) &&
+        hasRequiredFields(['caption', 'status', 'createdAt']) &&
+        validStringLength('caption', 1, 2200) &&
+        data.status in validStatuses &&
+        data.createdAt is timestamp &&
+        (!( 'imageUrl' in data ) || isValidUrl(data.imageUrl)) &&
+        (!( 'hashtags' in data ) || (data.hashtags is list && data.hashtags.size() <= 30)) &&
+        (!( 'publicationDate' in data ) || data.publicationDate is timestamp) &&
+        (!( 'publishedAt' in data ) || data.publishedAt is timestamp) &&
+        isValidOptionalString('instagramMediaId', 1, 100) &&
+        isValidOptionalString('errorMessage', 1, 500) &&
+        isValidOptionalString('authorId', 1, 128) &&
+        (!( 'updatedAt' in data ) || data.updatedAt is timestamp);
+    }
+
+    // Validator for clients collection (CRM & reminders)
+    function isValidClient(data) {
+      let allowedFields = [
+        'name', 'phone', 'email', 'lastVisit',
+        'serviceType', 'reminderStatus', 'notes',
+        'createdAt', 'updatedAt'
+      ];
+      let validReminderStatuses = ['en_attente', 'envoye', 'confirme', 'annule', 'aucun'];
+
+      return hasOnlyAllowedFields(allowedFields) &&
+        hasRequiredFields(['name', 'phone', 'lastVisit', 'serviceType', 'reminderStatus', 'createdAt']) &&
+        validStringLength('name', 1, 100) &&
+        validStringLength('phone', 6, 25) &&
+        data.lastVisit is timestamp &&
+        validStringLength('serviceType', 1, 100) &&
+        data.reminderStatus in validReminderStatuses &&
+        data.createdAt is timestamp &&
+        (!( 'email' in data ) || isValidEmail(data.email)) &&
+        isValidOptionalString('notes', 1, 1000) &&
+        (!( 'updatedAt' in data ) || data.updatedAt is timestamp);
+    }
+
+    // Validator for campaigns collection
+    function isValidCampaign(data) {
+      let allowedFields = [
+        'name', 'description', 'type', 'status',
+        'startDate', 'endDate', 'targetAudience',
+        'createdBy', 'createdAt', 'updatedAt'
+      ];
+      let validTypes = ['instagram', 'email', 'sms', 'promotion', 'autre'];
+      let validStatuses = ['brouillon', 'active', 'terminee', 'suspendue', 'archivee'];
+
+      return hasOnlyAllowedFields(allowedFields) &&
+        hasRequiredFields(['name', 'type', 'status', 'startDate', 'createdAt']) &&
+        validStringLength('name', 1, 100) &&
+        data.type in validTypes &&
+        data.status in validStatuses &&
+        data.startDate is timestamp &&
+        data.createdAt is timestamp &&
+        isValidOptionalString('description', 1, 1000) &&
+        (!( 'endDate' in data ) || data.endDate is timestamp) &&
+        isValidOptionalString('targetAudience', 1, 200) &&
+        isValidOptionalString('createdBy', 1, 128) &&
+        (!( 'updatedAt' in data ) || data.updatedAt is timestamp);
+    }
+
+    // ===============================================================
+    // Collection Rules
+    // ===============================================================
+
+    // Root-level default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Instagram Posts: authenticated salon staff access
+    match /instagram_posts/{postId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidPost(request.resource.data);
+      allow update: if isAuthenticated() &&
+                    isValidPost(request.resource.data) &&
+                    areImmutableFieldsUnchanged(['createdAt']);
+      allow delete: if isAuthenticated();
+    }
+
+    // Salon Clients: protected PII, authenticated salon staff access only
+    match /clients/{clientId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidClient(request.resource.data);
+      allow update: if isAuthenticated() &&
+                    isValidClient(request.resource.data) &&
+                    areImmutableFieldsUnchanged(['createdAt']);
+      allow delete: if isAuthenticated();
+    }
+
+    // Marketing Campaigns: authenticated salon staff access
+    match /campaigns/{campaignId} {
+      allow read: if isAuthenticated();
+      allow create: if isAuthenticated() && isValidCampaign(request.resource.data);
+      allow update: if isAuthenticated() &&
+                    isValidCampaign(request.resource.data) &&
+                    areImmutableFieldsUnchanged(['createdAt']);
+      allow delete: if isAuthenticated();
+    }
+
+    // Sensitive configuration and credentials: completely closed to client SDKs
+    // Cloud Functions / Firebase Admin SDK bypass security rules automatically
+    match /config/{configId} {
+      allow read, write: if false;
+    }
+  }
+}
