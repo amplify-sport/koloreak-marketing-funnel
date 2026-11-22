@@ -5,7 +5,7 @@
   "functions": [
     {
       "source": "functions",
-      "codebase": "default",
+      "codebase": "koloreak",
       "disallowLegacyRuntimeConfig": true,
       "ignore": [
         "node_modules",

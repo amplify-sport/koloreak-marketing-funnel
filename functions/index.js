@@ -379,7 +379,7 @@ exports.testerPublicationInstagram = onRequest(async (req, res) => {
 // ============================================================================
 // 7. DÉCLENCHEUR HTTP : PUBLIER UN BROUILLON FIRESTORE EXISTANT
 // ============================================================================
-exports.publierBrouillonExistant = onRequest(async (req, res) => {
+exports.publierBrouillonInstagram = onRequest(async (req, res) => {
     try {
         const { id, force } = req.query;
         let postDoc;
@@ -433,7 +433,7 @@ exports.publierBrouillonExistant = onRequest(async (req, res) => {
 // ============================================================================
 // 8. CRM & RELANCE FIDÉLISATION (Optionnel : Relance soin & balayage après 6-8 semaines)
 // ============================================================================
-exports.relanceClientSoin = onDocumentCreated("clients/{clientId}", async (event) => {
+exports.relanceClientKoloreak = onDocumentCreated("clients/{clientId}", async (event) => {
     const snap = event.data;
     if (!snap) return;
 
