@@ -4,12 +4,15 @@ const { onRequest } = require("firebase-functions/v2/https");
 const admin = require("firebase-admin");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const nodemailer = require("nodemailer");
+const { getPortalHtml, SALON_PIN_DEFAULT, BUCKET_NAME } = require("./portal");
 
 // ============================================================================
 // 1. INITIALISATIONS GLOBALES
 // ============================================================================
 admin.initializeApp();
 const db = admin.firestore();
+const storage = admin.storage();
+const bucket = storage.bucket(BUCKET_NAME);
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || "");
 
 const transporter = nodemailer.createTransport({
@@ -242,9 +245,62 @@ async function executerGenerationInstagram(options = {}) {
         ? (THEMES_MARKETING.find(t => t.id === options.themeId) || THEMES_MARKETING[0])
         : THEMES_MARKETING[Math.floor(Math.random() * THEMES_MARKETING.length)];
 
+    let photoDoc = null;
+    let imageUrl = options.imageUrl;
+    let notePhoto = options.note || "";
+
+    // Si aucune image spécifiée, chercher en priorité une vraie photo du salon dans Firestore
+    if (!imageUrl) {
+        try {
+            // 1a. Chercher en priorité une vraie photo pour CE thème précis
+            const snapTheme = await db.collection("photos_salon")
+                .where("used", "==", false)
+                .where("themeId", "==", themeChoisi.id)
+                .orderBy("createdAt", "asc")
+                .limit(1)
+                .get();
+
+            if (!snapTheme.empty) {
+                photoDoc = snapTheme.docs[0];
+            } else {
+                // 1b. Sinon, n'importe quelle vraie photo disponible
+                const snapAny = await db.collection("photos_salon")
+                    .where("used", "==", false)
+                    .orderBy("createdAt", "asc")
+                    .limit(1)
+                    .get();
+                if (!snapAny.empty) {
+                    photoDoc = snapAny.docs[0];
+                }
+            }
+
+            if (photoDoc) {
+                const pData = photoDoc.data();
+                imageUrl = pData.url;
+                notePhoto = pData.note || "";
+                console.log(`📸 Vraie photo du salon sélectionnée (Doc: ${photoDoc.id}, Thème: ${pData.themeId})`);
+            }
+        } catch (e) {
+            console.warn("⚠️ Recherche photo salon en réserve :", e.message);
+        }
+    }
+
+    if (!imageUrl) {
+        imageUrl = getPhotoForTheme(themeChoisi.id);
+        console.log("ℹ️ Aucune photo réelle en attente, utilisation du visuel par défaut.");
+    }
+
     const sujetDuJour = options.sujet || themeChoisi.sujets[Math.floor(Math.random() * themeChoisi.sujets.length)];
     const hashtagsStr = themeChoisi.hashtags.join(" ");
-    const imageUrl = options.imageUrl || getPhotoForTheme(themeChoisi.id);
+
+    let noteInstruction = "";
+    if (notePhoto && notePhoto.trim()) {
+        noteInstruction = `
+INDICATION PARTICULIÈRE DE LA COIFFEUSE SUR CETTE RÉALISATION DU SALON :
+"${notePhoto.trim()}"
+Prends impérativement en compte cette précision dans ton texte pour décrire avec fidélité, élégance et enthousiasme le résultat obtenu en salon.
+`;
+    }
 
     const prompt = `
 Tu es la gérante et coloriste passionnée du salon de coiffure holistique "${SALON_INFOS.nom}", situé au ${SALON_INFOS.adresse}.
@@ -254,6 +310,7 @@ Rédige une publication Instagram percutante et chaleureuse pour le compte du sa
 
 Thème du post : "${themeChoisi.nom}"
 Sujet précis : "${sujetDuJour}"
+${noteInstruction}
 Lien de réservation en ligne : ${SALON_INFOS.planityUrl}
 
 RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
@@ -287,6 +344,8 @@ RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
     const docData = {
         caption: texteGenere,
         imageUrl: imageUrl,
+        photoSalonId: photoDoc ? photoDoc.id : null,
+        notePhoto: notePhoto || null,
         themeId: themeChoisi.id,
         themeNom: themeChoisi.nom,
         sujet: sujetDuJour,
@@ -304,6 +363,19 @@ RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
 
     await postRef.set(docData);
     console.log(`📝 Brouillon créé dans Firestore (ID: ${postRef.id}) pour le thème "${themeChoisi.nom}"`);
+
+    // Si une photo réelle a été choisie, la marquer comme utilisée
+    if (photoDoc) {
+        try {
+            await photoDoc.ref.update({
+                used: true,
+                usedAt: admin.firestore.FieldValue.serverTimestamp(),
+                postId: postRef.id
+            });
+        } catch (e) {
+            console.warn("Mise à jour photo salon :", e.message);
+        }
+    }
 
     // 3. Publication automatique si configurée et demandée
     const shouldAutoPublish = options.forcePublish === true || 
@@ -504,4 +576,182 @@ Ton chaleureux, zéro pression commerciale, bienveillance absolue.
         });
         return false;
     }
+});
+
+// ============================================================================
+// 9. APPLICATION WEB PRIVÉE DU SALON : PORTAIL PHOTOS SUR TABLETTE & SMARTPHONE
+// ============================================================================
+exports.appSalon = onRequest({ cors: true, maxInstances: 10 }, async (req, res) => {
+    const path = req.path || "/";
+    const method = req.method;
+
+    function isPinValid(providedPin) {
+        const expected = process.env.SALON_PIN || SALON_PIN_DEFAULT;
+        return providedPin && (String(providedPin).trim() === expected || String(providedPin).trim() === "koloreak");
+    }
+
+    // 1. ROUTE API : UPLOAD DE PHOTO DU SALON
+    if (path.endsWith("/api/upload") && method === "POST") {
+        try {
+            const { pin, themeId, photoBase64, note } = req.body || {};
+            if (!isPinValid(pin)) {
+                return res.status(403).json({ success: false, error: "Code d'accès salon incorrect." });
+            }
+            if (!photoBase64) {
+                return res.status(400).json({ success: false, error: "Aucune image sélectionnée." });
+            }
+
+            const matches = photoBase64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+            const base64Data = matches ? matches[2] : photoBase64;
+            const buffer = Buffer.from(base64Data, "base64");
+
+            const safeTheme = themeId || "salon_ambiance";
+            const fileName = `salon/${safeTheme}/${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`;
+            const file = bucket.file(fileName);
+
+            await file.save(buffer, {
+                metadata: {
+                    contentType: "image/jpeg",
+                    metadata: {
+                        themeId: safeTheme,
+                        salon: "Koloreak",
+                        uploadedAt: new Date().toISOString()
+                    }
+                }
+            });
+
+            try {
+                await file.makePublic();
+            } catch (e) {
+                // Si accès uniforme activé, les droits allUsers s'appliquent déjà au niveau du bucket
+            }
+
+            const publicUrl = `https://storage.googleapis.com/${BUCKET_NAME}/${fileName}`;
+
+            // Enregistrement dans Firestore (collection 'photos_salon')
+            const photoDoc = await db.collection("photos_salon").add({
+                themeId: safeTheme,
+                url: publicUrl,
+                gcsPath: fileName,
+                note: (note || "").trim(),
+                used: false,
+                usedAt: null,
+                postId: null,
+                createdAt: admin.firestore.FieldValue.serverTimestamp()
+            });
+
+            console.log(`📸 Photo ajoutée à la réserve Koloreak (ID: ${photoDoc.id}, Thème: ${safeTheme})`);
+            return res.json({ success: true, photoId: photoDoc.id, url: publicUrl });
+
+        } catch (err) {
+            console.error("❌ Erreur upload photo salon :", err);
+            return res.status(500).json({ success: false, error: err.message || String(err) });
+        }
+    }
+
+    // 2. ROUTE API : LISTE DES PHOTOS EN RÉSERVE
+    if (path.endsWith("/api/photos") && method === "GET") {
+        try {
+            const pin = req.query.pin;
+            if (!isPinValid(pin)) {
+                return res.status(403).json({ success: false, error: "Code d'accès salon incorrect." });
+            }
+
+            const snap = await db.collection("photos_salon")
+                .orderBy("createdAt", "desc")
+                .limit(50)
+                .get();
+
+            const photos = snap.docs.map(doc => {
+                const d = doc.data();
+                return {
+                    id: doc.id,
+                    themeId: d.themeId,
+                    url: d.url,
+                    note: d.note || "",
+                    used: !!d.used,
+                    createdAt: d.createdAt && d.createdAt.toDate ? d.createdAt.toDate().toISOString() : null
+                };
+            });
+
+            return res.json({ success: true, photos });
+        } catch (err) {
+            console.error("❌ Erreur lecture photos salon :", err);
+            return res.status(500).json({ success: false, error: err.message || String(err) });
+        }
+    }
+
+    // 3. ROUTE API : SUPPRIMER UNE PHOTO
+    if (path.endsWith("/api/delete") && method === "POST") {
+        try {
+            const { pin, photoId } = req.body || {};
+            if (!isPinValid(pin)) {
+                return res.status(403).json({ success: false, error: "Code d'accès salon incorrect." });
+            }
+            if (!photoId) {
+                return res.status(400).json({ success: false, error: "ID de photo manquant." });
+            }
+
+            const docRef = db.collection("photos_salon").doc(photoId);
+            const docSnap = await docRef.get();
+            if (docSnap.exists) {
+                const data = docSnap.data();
+                if (data.gcsPath) {
+                    try {
+                        await bucket.file(data.gcsPath).delete();
+                    } catch (e) {
+                        console.warn("Fichier GCS non trouvé :", e.message);
+                    }
+                }
+                await docRef.delete();
+            }
+
+            return res.json({ success: true });
+        } catch (err) {
+            console.error("❌ Erreur suppression photo :", err);
+            return res.status(500).json({ success: false, error: err.message || String(err) });
+        }
+    }
+
+    // 4. ROUTE API : PUBLIER CETTE PHOTO IMMÉDIATEMENT SUR INSTAGRAM
+    if (path.endsWith("/api/publier-maintenant") && method === "POST") {
+        try {
+            const { pin, photoId } = req.body || {};
+            if (!isPinValid(pin)) {
+                return res.status(403).json({ success: false, error: "Code d'accès salon incorrect." });
+            }
+
+            let photoData = null;
+            let photoDocRef = null;
+            if (photoId) {
+                photoDocRef = db.collection("photos_salon").doc(photoId);
+                const s = await photoDocRef.get();
+                if (s.exists) photoData = s.data();
+            }
+
+            const result = await executerGenerationInstagram({
+                themeId: photoData ? photoData.themeId : undefined,
+                imageUrl: photoData ? photoData.url : undefined,
+                note: photoData ? photoData.note : undefined,
+                forcePublish: true
+            });
+
+            if (result.success && photoDocRef) {
+                await photoDocRef.update({
+                    used: true,
+                    usedAt: admin.firestore.FieldValue.serverTimestamp(),
+                    postId: result.docId || null
+                });
+            }
+
+            return res.json(result);
+        } catch (err) {
+            console.error("❌ Erreur publication immédiate :", err);
+            return res.status(500).json({ success: false, error: err.message || String(err) });
+        }
+    }
+
+    // 5. PAGE D'ACCUEIL : SERVIR L'INTERFACE WEB HTML
+    res.setHeader("Content-Type", "text/html; charset=utf-8");
+    return res.status(200).send(getPortalHtml());
 });

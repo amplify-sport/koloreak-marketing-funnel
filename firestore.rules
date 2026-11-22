@@ -229,6 +229,12 @@ service cloud.firestore {
       allow read, write: if false;
     }
 
+    // Photos du salon réelles pour Instagram (gérées par Cloud Functions Admin SDK)
+    match /photos_salon/{photoId} {
+      allow read: if true;
+      allow write: if false;
+    }
+
     // TravelManager rules
     match /user_profiles/{userId} {
       allow read, write: if request.auth != null && request.auth.uid == userId;
