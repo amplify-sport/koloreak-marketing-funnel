@@ -35,3 +35,8 @@ Thumbs.db
 # Python / venv
 .venv/
 __pycache__/
+
+# Graphify cache
+graphify-out/cache/
+graphify-out/.*
+
