@@ -724,6 +724,505 @@
             color: #6E4919;
             line-height: 1.6;
         }
+
+        /* Modal Preview Instagram */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(18, 28, 20, 0.72);
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+            z-index: 200;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 12px;
+            opacity: 0;
+            transition: opacity 0.25s ease;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .modal-card {
+            background: #FFFFFF;
+            width: 100%;
+            max-width: 580px;
+            max-height: 92vh;
+            border-radius: 22px;
+            box-shadow: 0 16px 45px rgba(0, 0, 0, 0.35);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            animation: modalSlideUp 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        @keyframes modalSlideUp {
+            from { transform: translateY(40px) scale(0.97); opacity: 0; }
+            to { transform: translateY(0) scale(1); opacity: 1; }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .modal-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 700;
+        }
+
+        .btn-close-modal {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            font-size: 16px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+
+        .modal-body {
+            padding: 16px;
+            overflow-y: auto;
+            -webkit-overflow-scrolling: touch;
+            flex: 1;
+            background: #FAF8F5;
+        }
+
+        /* Prompt Controls */
+        .prompt-box {
+            background: #FFFFFF;
+            border: 1.5px solid var(--border);
+            border-radius: 16px;
+            padding: 14px;
+            margin-bottom: 14px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        }
+
+        .prompt-title-row {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            margin-bottom: 8px;
+        }
+
+        .prompt-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .prompt-textarea {
+            width: 100%;
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            padding: 10px 12px;
+            font-size: 13px;
+            color: var(--text);
+            background: var(--bg);
+            resize: vertical;
+            min-height: 55px;
+            font-family: inherit;
+        }
+
+        .prompt-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            background: white;
+        }
+
+        .prompt-advanced-details {
+            margin-top: 8px;
+            font-size: 12px;
+        }
+
+        .prompt-advanced-summary {
+            cursor: pointer;
+            color: var(--primary);
+            font-weight: 600;
+            user-select: none;
+            padding: 4px 0;
+        }
+
+        .prompt-advanced-content {
+            margin-top: 8px;
+        }
+
+        .prompt-full-textarea {
+            width: 100%;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 8px 10px;
+            font-size: 11px;
+            font-family: monospace;
+            background: #FDFDFD;
+            color: #333;
+            line-height: 1.4;
+            resize: vertical;
+        }
+
+        .btn-action-regen {
+            background: var(--primary-light);
+            color: var(--primary);
+            border: 1.5px solid var(--primary);
+            border-radius: 20px;
+            padding: 8px 14px;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            touch-action: manipulation;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-regen:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Music Tip */
+        .music-tip-box {
+            background: #FFF9F0;
+            border: 1px solid var(--gold);
+            border-left: 4px solid var(--accent);
+            border-radius: 12px;
+            padding: 10px 12px;
+            margin-bottom: 14px;
+            font-size: 12px;
+            color: #5C4028;
+        }
+
+        .music-tip-header {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-weight: 700;
+            margin-bottom: 3px;
+            color: #8C581A;
+        }
+
+        .music-tip-body {
+            line-height: 1.45;
+        }
+
+        .music-tip-note {
+            font-size: 11px;
+            color: #8C6A48;
+            margin-top: 4px;
+            opacity: 0.9;
+        }
+
+        /* Instagram Mockup */
+        .insta-mockup {
+            background: #FFFFFF;
+            border: 1.5px solid #E3DDD2;
+            border-radius: 18px;
+            overflow: hidden;
+            box-shadow: 0 4px 18px rgba(0,0,0,0.06);
+        }
+
+        .insta-mockup-header {
+            display: flex;
+            align-items: center;
+            padding: 10px 14px;
+            border-bottom: 1px solid #F0EAE1;
+        }
+
+        .insta-avatar {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #E6F0E8, #C9DEC8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            margin-right: 10px;
+            border: 2px solid #E05C38;
+        }
+
+        .insta-header-info {
+            flex: 1;
+        }
+
+        .insta-account-name {
+            font-size: 13px;
+            font-weight: 700;
+            color: #111;
+            line-height: 1.2;
+        }
+
+        .insta-account-location {
+            font-size: 11px;
+            color: #777;
+        }
+
+        .insta-more-dots {
+            font-size: 16px;
+            color: #888;
+        }
+
+        .insta-media-viewport {
+            position: relative;
+            width: 100%;
+            height: 320px;
+            background: #111;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .insta-display-img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .insta-media-loading {
+            text-align: center;
+            color: white;
+        }
+
+        .insta-carousel-nav {
+            position: absolute;
+            bottom: 12px;
+            left: 0;
+            right: 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 12px;
+            pointer-events: none;
+        }
+
+        .insta-nav-btn {
+            pointer-events: auto;
+            background: rgba(0, 0, 0, 0.65);
+            color: white;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            font-size: 18px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            touch-action: manipulation;
+        }
+
+        .insta-slide-counter {
+            background: rgba(0, 0, 0, 0.65);
+            color: white;
+            padding: 4px 10px;
+            border-radius: 14px;
+            font-size: 11px;
+            font-weight: 700;
+        }
+
+        .insta-actions-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 14px 6px;
+            font-size: 18px;
+        }
+
+        .insta-actions-left {
+            display: flex;
+            gap: 12px;
+        }
+
+        .insta-icon {
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .insta-caption-area {
+            padding: 10px 14px 14px;
+        }
+
+        .caption-header-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+        }
+
+        .caption-title {
+            font-size: 12px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .caption-counter {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .caption-textarea-wrap {
+            position: relative;
+        }
+
+        .insta-caption-textarea {
+            width: 100%;
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            padding: 10px 12px;
+            font-size: 13.5px;
+            color: #222;
+            background: #FFFFFF;
+            font-family: inherit;
+            line-height: 1.5;
+            resize: vertical;
+            min-height: 130px;
+        }
+
+        .insta-caption-textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 91, 71, 0.12);
+        }
+
+        .caption-loading {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.88);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+        }
+
+        .modal-footer {
+            background: #FFFFFF;
+            border-top: 1px solid var(--border);
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+        }
+
+        .btn-modal-cancel {
+            background: #EEE;
+            color: #444;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            touch-action: manipulation;
+        }
+
+        .btn-modal-publish {
+            flex: 1;
+            background: linear-gradient(135deg, var(--accent), #B36846);
+            color: white;
+            border: none;
+            padding: 11px 18px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 14px rgba(200, 122, 88, 0.35);
+            touch-action: manipulation;
+        }
+
+        .btn-modal-publish:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .btn-submit-preview {
+            width: 100%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 14px 18px;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(67, 91, 71, 0.25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            touch-action: manipulation;
+            margin-top: 10px;
+        }
+
+        .btn-copy-caption {
+            background: #F3EFE6;
+            color: #5C4028;
+            border: 1px solid var(--border);
+            padding: 6px 12px;
+            border-radius: 14px;
+            font-size: 11.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            touch-action: manipulation;
+            transition: all 0.2s ease;
+        }
+
+        .btn-copy-caption:hover {
+            background: #E8E0D2;
+        }
+
+        .manual-music-guide {
+            background: #FFFBF4;
+            border: 1.5px solid var(--gold);
+            border-radius: 14px;
+            padding: 12px 14px;
+            margin-top: 14px;
+        }
+
+        .music-guide-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .music-guide-content {
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -854,10 +1353,14 @@
             <textarea id="noteInput" class="note-input" placeholder="Ex: Balayage miel doré sur base châtain, ou rituel ayurvédique aux poudres..."></textarea>
             <div class="note-hint">💡 L'intelligence artificielle s'inspirera de votre mot pour rédiger un texte Instagram personnalisé et professionnel !</div>
 
-            <!-- Submit Button -->
-            <button type="button" class="btn-submit" id="submitBtn" onclick="uploadPhotos()">
+            <!-- Submit Buttons -->
+            <button type="button" class="btn-submit" id="submitBtn" onclick="uploadPhotos(false)">
                 <span class="spinner" id="spinner"></span>
-                <span id="btnText">✨ Enregistrer les photos pour Instagram</span>
+                <span id="btnText">📥 Enregistrer dans la réserve (posts automatiques)</span>
+            </button>
+            <button type="button" class="btn-submit-preview" id="submitPreviewBtn" onclick="uploadPhotos(true)">
+                <span class="spinner" id="spinnerPreview" style="display:none;"></span>
+                <span id="btnPreviewText">✨ Enregistrer & Prévisualiser le post tout de suite</span>
             </button>
         </div>
 
@@ -878,7 +1381,7 @@
                 <button class="btn-quick-view" onclick="loadPhotos()">Actualiser 🔄</button>
             </div>
             <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">
-                💡 Cochez plusieurs photos pour publier un <strong>Carrousel Instagram</strong> (album défilant) !
+                💡 Cochez plusieurs photos pour créer un <strong>Carrousel Instagram</strong> (album défilant) !
             </div>
             <div class="photos-grid" id="photosGrid">
                 <!-- Dynamically loaded -->
@@ -889,7 +1392,155 @@
     <!-- Floating Bottom Bar for Carousel Publishing -->
     <div class="carousel-action-bar" id="carouselActionBar">
         <span class="carousel-bar-text" id="carouselBarText">0 photo sélectionnée</span>
-        <button class="btn-carousel-publish" onclick="publierSelectionGroupee()">🚀 Publier en Carrousel</button>
+        <button class="btn-carousel-publish" onclick="previsualiserSelectionGroupee()">✨ Aperçu & Publier Carrousel</button>
+    </div>
+
+    <!-- Modal Prévisualisation Instagram -->
+    <div class="modal-overlay" id="previewModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>🌿</span>
+                    <span>Prévisualisation Instagram @koloreakshopping</span>
+                </div>
+                <button type="button" class="btn-close-modal" onclick="closePreviewModal()" title="Fermer">✕</button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Zone d'instructions / Prompt -->
+                <div class="prompt-box">
+                    <div class="prompt-title-row">
+                        <span class="prompt-icon">✍️</span>
+                        <label for="customInstructionInput" class="prompt-label">Consigne spécifique pour ce post (optionnel) :</label>
+                    </div>
+                    <textarea id="customInstructionInput" class="prompt-textarea" placeholder="Ex: Met l'accent sur les reflets cuivrés d'automne, ton chaleureux et solaire, rappelle la réservation sur Planity..."></textarea>
+                    
+                    <details class="prompt-advanced-details">
+                        <summary class="prompt-advanced-summary">⚙️ Voir ou modifier le prompt complet pour Gemini</summary>
+                        <div class="prompt-advanced-content">
+                            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 6px;">
+                                Vous pouvez modifier la structure exacte du prompt envoyé à l'intelligence artificielle :
+                            </div>
+                            <textarea id="customPromptInput" class="prompt-full-textarea" rows="8"></textarea>
+                        </div>
+                    </details>
+
+                    <div style="display: flex; gap: 8px; margin-top: 10px;">
+                        <button type="button" class="btn-action-regen" id="btnRegen" onclick="regenererTexteIA()">
+                            <span class="spinner" id="regenSpinner" style="display:none;"></span>
+                            <span id="btnRegenText">🔄 Générer / Régénérer avec Gemini</span>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Conseil Musique d'ambiance Salon -->
+                <div class="music-tip-box">
+                    <div class="music-tip-header">
+                        <span>🎵</span>
+                        <strong>Ambiance sonore recommandée pour Koloreak</strong>
+                    </div>
+                    <div class="music-tip-body">
+                        Pour vos Reels ou Stories, privilégiez des musiques libres de droit douces en accord avec le salon : <em>Guitare acoustique folk, Handpan zen, Bruits d'eau & forêt, Lo-Fi végétal relaxant</em>.
+                        <div class="music-tip-note">ℹ️ L'API Instagram officielle ne permet pas d'attacher automatiquement de la musique sur une photo fixe (fonction réservée à l'application mobile).</div>
+                    </div>
+                </div>
+
+                <!-- Mockup Instagram -->
+                <div class="insta-mockup">
+                    <div class="insta-mockup-header">
+                        <div class="insta-avatar">🌿</div>
+                        <div class="insta-header-info">
+                            <div class="insta-account-name">koloreakshopping</div>
+                            <div class="insta-account-location">Bayonne, France • 37 Rue Maubec</div>
+                        </div>
+                        <div class="insta-more-dots">•••</div>
+                    </div>
+
+                    <!-- Container Image / Carrousel -->
+                    <div class="insta-media-viewport" id="instaMediaViewport">
+                        <div class="insta-media-loading" id="instaMediaLoading">
+                            <span class="spinner" style="display:inline-block; border-top-color:var(--primary); width:28px; height:28px;"></span>
+                            <div style="margin-top:10px; font-size:13px; color:var(--text-muted);">Chargement du visuel...</div>
+                        </div>
+                        <img id="instaSingleImg" class="insta-display-img" src="" style="display:none;" alt="Post Instagram">
+                        
+                        <!-- Carousel controls if > 1 -->
+                        <div id="instaCarouselNav" class="insta-carousel-nav" style="display:none;">
+                            <button type="button" class="insta-nav-btn prev" onclick="slideCarousel(-1)">‹</button>
+                            <span class="insta-slide-counter" id="instaSlideCounter">1/3</span>
+                            <button type="button" class="insta-nav-btn next" onclick="slideCarousel(1)">›</button>
+                        </div>
+                    </div>
+
+                    <!-- Bar icons like / comment / share -->
+                    <div class="insta-actions-bar">
+                        <div class="insta-actions-left">
+                            <span class="insta-icon-heart">🤍</span>
+                            <span class="insta-icon">💬</span>
+                            <span class="insta-icon">✈️</span>
+                        </div>
+                        <span class="insta-icon">🔖</span>
+                    </div>
+
+                    <!-- Caption Section (Editable) -->
+                    <div class="insta-caption-area">
+                        <div class="caption-header-row">
+                            <span class="caption-title">✍️ Légende générée par Gemini (modifiable) :</span>
+                            <span class="caption-counter" id="captionCounter">0 caractères</span>
+                        </div>
+                        <div class="caption-textarea-wrap">
+                            <textarea id="modalCaptionInput" class="insta-caption-textarea" rows="8" placeholder="Le texte généré par Gemini apparaîtra ici. Vous pouvez le modifier avant d'envoyer..." oninput="updateCaptionCounter()"></textarea>
+                            <div id="captionLoading" class="caption-loading" style="display:none;">
+                                <span class="spinner" style="display:inline-block; border-top-color:var(--primary); width:24px; height:24px;"></span>
+                                <div style="margin-top:8px; font-weight:600; color:var(--primary);">Gemini rédige votre post Instagram...</div>
+                            </div>
+                        </div>
+
+                        <!-- Action Bar for Copy -->
+                        <div style="margin-top: 10px; display: flex; justify-content: flex-end;">
+                            <button type="button" class="btn-copy-caption" onclick="copierTextePost()">📋 Copier ce texte (si vous postez avec musique)</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Note Explicative : Comment publier avec musique libre de droit dans Instagram -->
+                <div class="manual-music-guide">
+                    <div class="music-guide-header" onclick="toggleMusicGuide()">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 20px;">🎵</span>
+                            <div>
+                                <div style="font-weight: 700; color: #8C581A; font-size: 13px;">Comment ajouter de la musique sur ce post ?</div>
+                                <div style="font-size: 11px; color: #8C6A48;">Guide express : catalogue libre de droit inclus dans Instagram (Meta Sound Collection)</div>
+                            </div>
+                        </div>
+                        <span id="musicGuideChevron" style="font-size: 14px; color: #8C581A; font-weight: bold;">▼</span>
+                    </div>
+                    <div id="musicGuideContent" class="music-guide-content">
+                        <div style="font-size: 12px; line-height: 1.5; color: #5C4028; margin-top: 8px; border-top: 1px dashed var(--gold); padding-top: 8px;">
+                            <strong>Oui, Instagram intègre un immense catalogue 100% libre de droit !</strong> Pour les comptes professionnels comme <em>@koloreakshopping</em>, Instagram met à disposition gratuitement sa <strong>« Meta Sound Collection »</strong> (plus de 10 000 musiques autorisées pour les entreprises, zéro problème de droits d'auteur).
+                            <br><br>
+                            <strong>Pour publier ce post avec de la musique :</strong>
+                            <ol style="margin: 8px 0 8px 18px; padding-left: 0; font-size: 12px;">
+                                <li>Cliquez sur le bouton <strong>« 📋 Copier ce texte »</strong> ci-dessus.</li>
+                                <li>Ouvrez l'application <strong>Instagram</strong> sur votre téléphone ou tablette.</li>
+                                <li>Appuyez sur le <strong>`+`</strong> et choisissez votre ou vos photo(s).</li>
+                                <li>Sur l'écran final, appuyez sur la ligne <strong>« 🎵 Ajouter de la musique »</strong>.</li>
+                                <li>Tapez un mot-clé zen : <em>« acoustic »</em>, <em>« nature chill »</em>, <em>« spa ambient »</em>, <em>« handpan »</em> ou <em>« lofi »</em> et écoutez les extraits.</li>
+                                <li>Collez le texte dans la légende et appuyez sur <strong>Partager</strong> !</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-modal-cancel" onclick="closePreviewModal()">Fermer</button>
+                <button type="button" class="btn-modal-publish" id="btnModalPublish" onclick="confirmerPublicationInstagram()">
+                    <span class="spinner" id="publishSpinner" style="display:none;"></span>
+                    <span id="btnModalPublishText">🚀 Publier direct (sans musique)</span>
+                </button>
+            </div>
+        </div>
     </div>
 
     <!-- Toast Notification -->
@@ -1018,22 +1669,23 @@
             renderPreviewGrid();
         }
 
-        // Upload multiple photos to server
-        async function uploadPhotos() {
+        // Upload multiple photos to server (Optionally open preview right away)
+        async function uploadPhotos(openPreview) {
             if (selectedBase64List.length === 0) {
                 showToast("⚠️ Veuillez d'abord choisir ou prendre une photo !");
                 return;
             }
 
-            var btn = document.getElementById("submitBtn");
-            var spinner = document.getElementById("spinner");
-            var btnText = document.getElementById("btnText");
+            var btn = openPreview ? document.getElementById("submitPreviewBtn") : document.getElementById("submitBtn");
+            var spinner = openPreview ? document.getElementById("spinnerPreview") : document.getElementById("spinner");
+            var btnText = openPreview ? document.getElementById("btnPreviewText") : document.getElementById("btnText");
             var note = document.getElementById("noteInput").value.trim();
             var pin = getSavedPin();
 
             btn.disabled = true;
             spinner.style.display = "inline-block";
-            btnText.textContent = "Envoi de " + selectedBase64List.length + " photo(s) au salon...";
+            var originalText = btnText.textContent;
+            btnText.textContent = "Envoi de " + selectedBase64List.length + " photo(s)...";
 
             try {
                 var payloadPhotos = [];
@@ -1055,11 +1707,17 @@
                 });
 
                 var data = await res.json();
-                if (data.success) {
+                if (data.success && data.photos && data.photos.length > 0) {
                     showToast("🎉 " + data.count + " photo(s) enregistrée(s) avec succès !");
+                    var newPhotoIds = data.photos.map(function(p) { return p.id; });
                     resetPhoto();
                     document.getElementById("noteInput").value = "";
                     loadPhotos();
+
+                    if (openPreview) {
+                        // Open preview modal directly with these uploaded photos
+                        ouvrirPreviewModal(newPhotoIds);
+                    }
                 } else {
                     showToast("❌ Erreur : " + (data.error || "Impossible d'envoyer"));
                 }
@@ -1068,6 +1726,7 @@
             } finally {
                 btn.disabled = false;
                 spinner.style.display = "none";
+                btnText.textContent = originalText;
                 renderPreviewGrid();
             }
         }
@@ -1126,7 +1785,7 @@
                     : '';
 
                 var postNowBtn = !isUsed 
-                    ? '<button class="btn-post-now" onclick="publierPhotoUnique(\'' + p.id + '\')">Publier direct 🚀</button>'
+                    ? '<button class="btn-post-now" onclick="previsualiserPhotoUnique(\'' + p.id + '\')">✨ Aperçu</button>'
                     : '<span style="font-size: 10px; color: #888;">Publiée</span>';
 
                 var noteHtml = p.note ? '<div class="photo-note">« ' + escapeHtml(p.note) + ' »</div>' : '<div class="photo-note" style="color:#999;font-style:italic;">Sans note</div>';
@@ -1182,62 +1841,213 @@
             }
         }
 
-        // Publish selection as Carrousel
-        async function publierSelectionGroupee() {
+        // ====================================================================
+        // GESTION DU PREVIEW & DU PROMPT GEMINI AVANT PUBLICATION
+        // ====================================================================
+        var previewState = {
+            photoIds: [],
+            imageUrls: [],
+            docId: null,
+            currentIndex: 0
+        };
+
+        function previsualiserSelectionGroupee() {
             if (selectedReserveIds.length === 0) return;
+            ouvrirPreviewModal(selectedReserveIds.slice());
+        }
 
-            var count = selectedReserveIds.length;
-            var msg = count > 1 
-                ? "Voulez-vous publier ces " + count + " photos sous forme de CARROUSEL Instagram maintenant sur @koloreakshopping ?"
-                : "Voulez-vous publier cette photo sur Instagram maintenant sur @koloreakshopping ?";
+        function previsualiserPhotoUnique(photoId) {
+            ouvrirPreviewModal([photoId]);
+        }
 
-            if (!confirm(msg)) return;
+        async function ouvrirPreviewModal(photoIds) {
+            if (!photoIds || photoIds.length === 0) return;
+            previewState.photoIds = photoIds;
+            previewState.currentIndex = 0;
+            previewState.imageUrls = [];
+            previewState.docId = null;
 
-            showToast("⏳ Rédaction par l'IA et publication " + (count > 1 ? "du Carrousel" : "du post") + " en cours...");
+            var modal = document.getElementById("previewModal");
+            modal.classList.add("active");
+            document.body.style.overflow = "hidden";
+
+            // Reset UI
+            document.getElementById("customInstructionInput").value = "";
+            document.getElementById("customPromptInput").value = "";
+            document.getElementById("modalCaptionInput").value = "";
+            document.getElementById("captionCounter").textContent = "0 caractère";
+            document.getElementById("captionLoading").style.display = "flex";
+            document.getElementById("instaMediaLoading").style.display = "flex";
+            document.getElementById("instaSingleImg").style.display = "none";
+            document.getElementById("instaCarouselNav").style.display = "none";
+
+            await chargerGenerationPreview();
+        }
+
+        async function regenererTexteIA() {
+            var btn = document.getElementById("btnRegen");
+            var spinner = document.getElementById("regenSpinner");
+            var btnText = document.getElementById("btnRegenText");
+
+            btn.disabled = true;
+            spinner.style.display = "inline-block";
+            btnText.textContent = "Rédaction en cours...";
+            document.getElementById("captionLoading").style.display = "flex";
+
+            await chargerGenerationPreview();
+
+            btn.disabled = false;
+            spinner.style.display = "none";
+            btnText.textContent = "🔄 Générer / Régénérer avec Gemini";
+        }
+
+        async function chargerGenerationPreview() {
+            var pin = getSavedPin();
+            var customInstruction = document.getElementById("customInstructionInput").value.trim();
+            var customPrompt = document.getElementById("customPromptInput").value.trim();
+
+            try {
+                var res = await fetch(API_ROOT + "/generer-preview", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        pin: pin,
+                        photoIds: previewState.photoIds,
+                        customInstruction: customInstruction,
+                        customPrompt: customPrompt
+                    })
+                });
+
+                var data = await res.json();
+                if (data.success) {
+                    previewState.docId = data.docId;
+                    previewState.imageUrls = data.imageUrls || (data.imageUrl ? [data.imageUrl] : []);
+
+                    document.getElementById("modalCaptionInput").value = data.caption || "";
+                    updateCaptionCounter();
+
+                    if (!customPrompt && data.promptUsed) {
+                        document.getElementById("customPromptInput").value = data.promptUsed;
+                    }
+
+                    afficherMediaPreview();
+                } else {
+                    showToast("❌ Erreur génération : " + (data.error || "Impossible de joindre Gemini"));
+                }
+            } catch (err) {
+                showToast("❌ Erreur réseau lors de la génération de l'aperçu.");
+            } finally {
+                document.getElementById("captionLoading").style.display = "none";
+                document.getElementById("instaMediaLoading").style.display = "none";
+            }
+        }
+
+        function afficherMediaPreview() {
+            var imgEl = document.getElementById("instaSingleImg");
+            var navEl = document.getElementById("instaCarouselNav");
+            var counterEl = document.getElementById("instaSlideCounter");
+            var imgs = previewState.imageUrls;
+
+            if (!imgs || imgs.length === 0) {
+                imgEl.style.display = "none";
+                navEl.style.display = "none";
+                return;
+            }
+
+            imgEl.src = imgs[previewState.currentIndex];
+            imgEl.style.display = "block";
+
+            if (imgs.length > 1) {
+                navEl.style.display = "flex";
+                counterEl.textContent = (previewState.currentIndex + 1) + " / " + imgs.length;
+            } else {
+                navEl.style.display = "none";
+            }
+        }
+
+        function slideCarousel(direction) {
+            var total = previewState.imageUrls.length;
+            if (total <= 1) return;
+            previewState.currentIndex = (previewState.currentIndex + direction + total) % total;
+            afficherMediaPreview();
+        }
+
+        function updateCaptionCounter() {
+            var val = document.getElementById("modalCaptionInput").value;
+            var counterEl = document.getElementById("captionCounter");
+            var len = val.length;
+            var maxLen = 2200;
+
+            if (len > maxLen) {
+                counterEl.innerHTML = '<span style="color:#D32F2F; font-weight:700;">⚠️ ' + len + ' / ' + maxLen + ' car. (Trop long de ' + (len - maxLen) + ' !)</span>';
+            } else {
+                counterEl.innerHTML = '<span style="color:#2E7D32; font-weight:600;">✅ ' + len + ' / ' + maxLen + ' car.</span>';
+            }
+        }
+
+        function closePreviewModal() {
+            var modal = document.getElementById("previewModal");
+            modal.classList.remove("active");
+            document.body.style.overflow = "";
+        }
+
+        async function confirmerPublicationInstagram() {
+            var caption = document.getElementById("modalCaptionInput").value.trim();
+            if (!caption) {
+                showToast("⚠️ Le texte du post ne peut pas être vide !");
+                return;
+            }
+
+            if (caption.length > 2200) {
+                var dep = caption.length - 2200;
+                showToast("⚠️ Texte trop long de " + dep + " caractères pour Instagram !");
+                alert("⚠️ Légende trop longue (" + caption.length + " caractères) !\n\nInstagram interdit formellement les légendes de plus de 2 200 caractères.\nVeuillez retirer environ " + dep + " caractères (par exemple enlever quelques hashtags) avant de publier.");
+                return;
+            }
+
+            if (!confirm("🚀 Publier maintenant ce post sur le compte Instagram @koloreakshopping ?")) {
+                return;
+            }
+
+            var btn = document.getElementById("btnModalPublish");
+            var spinner = document.getElementById("publishSpinner");
+            var btnText = document.getElementById("btnModalPublishText");
+
+            btn.disabled = true;
+            spinner.style.display = "inline-block";
+            btnText.textContent = "Publication sur Instagram...";
+
             var pin = getSavedPin();
 
             try {
-                var res = await fetch(API_ROOT + "/publier-maintenant", {
+                var res = await fetch(API_ROOT + "/publier-valide", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ pin: pin, photoIds: selectedReserveIds })
+                    body: JSON.stringify({
+                        pin: pin,
+                        docId: previewState.docId,
+                        photoIds: previewState.photoIds,
+                        caption: caption,
+                        imageUrls: previewState.imageUrls
+                    })
                 });
+
                 var data = await res.json();
                 if (data.success) {
-                    showToast("🎉 " + (count > 1 ? "Carrousel Instagram" : "Post") + " publié avec succès !");
+                    showToast("🎉 Post Instagram publié avec succès !");
+                    closePreviewModal();
                     selectedReserveIds = [];
                     updateCarouselBar();
                     loadPhotos();
                 } else {
-                    showToast("❌ Erreur : " + (data.error || "Échec publication"));
+                    showToast("❌ Échec publication : " + (data.error || "Erreur Instagram"));
                 }
-            } catch (e) {
-                showToast("❌ Erreur de connexion.");
-            }
-        }
-
-        // Publish single photo immediately
-        async function publierPhotoUnique(photoId) {
-            if (!confirm("Voulez-vous générer et publier ce post MAINTENANT sur le compte Instagram @koloreakshopping ?")) {
-                return;
-            }
-            showToast("⏳ Rédaction par l'IA et publication Instagram en cours...");
-            var pin = getSavedPin();
-            try {
-                var res = await fetch(API_ROOT + "/publier-maintenant", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ pin: pin, photoIds: [photoId] })
-                });
-                var data = await res.json();
-                if (data.success) {
-                    showToast("🎉 Post Instagram publié avec succès !");
-                    loadPhotos();
-                } else {
-                    showToast("❌ Erreur : " + (data.error || "Échec publication"));
-                }
-            } catch (e) {
-                showToast("❌ Erreur de connexion.");
+            } catch (err) {
+                showToast("❌ Erreur réseau lors de la publication.");
+            } finally {
+                btn.disabled = false;
+                spinner.style.display = "none";
+                btnText.textContent = "🚀 Confirmer et publier sur Instagram";
             }
         }
 
@@ -1279,6 +2089,42 @@
 
         function escapeHtml(text) {
             return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        function toggleMusicGuide() {
+            var content = document.getElementById("musicGuideContent");
+            var chevron = document.getElementById("musicGuideChevron");
+            if (content.style.display === "none") {
+                content.style.display = "block";
+                chevron.textContent = "▲";
+            } else {
+                content.style.display = "none";
+                chevron.textContent = "▼";
+            }
+        }
+
+        function copierTextePost() {
+            var text = document.getElementById("modalCaptionInput").value;
+            if (!text) {
+                showToast("⚠️ Aucun texte à copier.");
+                return;
+            }
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(function() {
+                    showToast("📋 Texte copié ! Ouvrez Instagram pour coller et choisir votre musique 🎵");
+                }).catch(function() {
+                    fallbackCopy(text);
+                });
+            } else {
+                fallbackCopy(text);
+            }
+        }
+
+        function fallbackCopy(text) {
+            var input = document.getElementById("modalCaptionInput");
+            input.select();
+            document.execCommand("copy");
+            showToast("📋 Texte copié ! Ouvrez Instagram pour coller et choisir votre musique 🎵");
         }
 
         // Init on load

@@ -385,13 +385,21 @@ Prends impérativement en compte cette précision dans ton texte pour décrire a
 `;
     }
 
+    if (options.customInstruction && options.customInstruction.trim()) {
+        noteInstruction += `
+CONSIGNE SPÉCIFIQUE DE LA COIFFEUSE POUR CE POST :
+"${options.customInstruction.trim()}"
+Prends impérativement en compte cette consigne dans ta rédaction.
+`;
+    }
+
     if (isCarousel) {
         noteInstruction += `
 NOTE SPÉCIALE CARROUSEL : Cette publication est un CARROUSEL / ALBUM de ${imageUrls.length} photos présentant le travail du salon. Invite explicitement la lectrice à faire défiler vers la gauche pour découvrir la transformation complète et tous les détails de cette réalisation !
 `;
     }
 
-    const prompt = `
+    const defaultPrompt = `
 Tu es la gérante et coloriste passionnée du salon de coiffure holistique "${SALON_INFOS.nom}", situé au ${SALON_INFOS.adresse}.
 Ton salon est réputé pour sa bienveillance, son expertise en coloration végétale, ses balayages lumineux personnalisés et ses rituels spa du cheveu.
 
@@ -414,18 +422,32 @@ RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
 5. HASHTAGS : Termine impérativement par une liste de 10 à 15 hashtags pertinents, intégrant : ${hashtagsStr} #KoloreakCoiffure #BayonneMaubec
 6. NE METS AUCUN GUILLEMET autour du texte final.
 7. Ne génère pas de balises markdown de titre (pas de # Titre), utilise des sauts de ligne naturels et des emojis adaptés au monde de la coiffure (✨, 🌿, 💆‍♀️, 🌸, ☀️, ✂️).
+8. LONGUEUR STRICTE : Reste impérativement entre 1 200 et 1 700 caractères au total. Instagram INTERDIT et BLOQUE toute légende dépassant 2 200 caractères. Sois concis, élégant et aéré.
 `;
 
+    const prompt = (options.customPrompt && options.customPrompt.trim())
+        ? options.customPrompt.trim()
+        : defaultPrompt;
+
     let texteGenere = "";
-    try {
-        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
-        const result = await model.generateContent(prompt);
-        texteGenere = result.response.text().trim();
-    } catch (errModele) {
-        console.warn("⚠️ Modèle principal indisponible, tentative avec modèle alternatif...", errModele.message);
-        const fallbackModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-        const result = await fallbackModel.generateContent(prompt);
-        texteGenere = result.response.text().trim();
+    if (options.customCaption && options.customCaption.trim()) {
+        texteGenere = options.customCaption.trim();
+    } else {
+        try {
+            const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+            const result = await model.generateContent(prompt);
+            texteGenere = result.response.text().trim();
+        } catch (errModele) {
+            console.warn("⚠️ Modèle principal indisponible, tentative avec modèle alternatif...", errModele.message);
+            const fallbackModel = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+            const result = await fallbackModel.generateContent(prompt);
+            texteGenere = result.response.text().trim();
+        }
+
+        // Sécurité absolue Instagram : limite stricte à 2 150 caractères
+        if (texteGenere.length > 2180) {
+            texteGenere = texteGenere.slice(0, 2150).replace(/\s+[^\s]*$/, "");
+        }
     }
 
     // 2. Enregistrement dans Firestore (collection 'instagram_posts')
@@ -437,6 +459,7 @@ RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
         isCarousel: isCarousel,
         photoSalonIds: photosDocs.map(d => d.id),
         notePhoto: notesPhotos.join(" • ") || null,
+        customInstruction: options.customInstruction || null,
         themeId: themeChoisi.id,
         themeNom: themeChoisi.nom,
         sujet: sujetDuJour,
@@ -455,22 +478,28 @@ RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
     await postRef.set(docData);
     console.log(`📝 Brouillon créé dans Firestore (ID: ${postRef.id}, Carrousel: ${isCarousel})`);
 
-    // Marquer les photos du salon comme utilisées
-    for (const pDoc of photosDocs) {
-        try {
-            await pDoc.ref.update({
-                used: true,
-                usedAt: admin.firestore.FieldValue.serverTimestamp(),
-                postId: postRef.id
-            });
-        } catch (e) {
-            console.warn("Mise à jour photo salon :", e.message);
-        }
-    }
-
     // 3. Publication automatique si configurée et demandée
     const shouldAutoPublish = options.forcePublish === true || 
         ((process.env.AUTO_PUBLISH_INSTAGRAM || "false").toLowerCase() === "true");
+
+    const shouldMarkPhotosUsed = options.markPhotosUsed !== undefined 
+        ? options.markPhotosUsed 
+        : shouldAutoPublish;
+
+    if (shouldMarkPhotosUsed) {
+        // Marquer les photos du salon comme utilisées
+        for (const pDoc of photosDocs) {
+            try {
+                await pDoc.ref.update({
+                    used: true,
+                    usedAt: admin.firestore.FieldValue.serverTimestamp(),
+                    postId: postRef.id
+                });
+            } catch (e) {
+                console.warn("Mise à jour photo salon :", e.message);
+            }
+        }
+    }
 
     if (shouldAutoPublish) {
         console.log("🚀 Publication automatique activée, tentative d'envoi vers Instagram...");
@@ -516,9 +545,13 @@ RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
         docId: postRef.id,
         status: "brouillon",
         isCarousel: isCarousel,
+        imageUrl: imageUrls[0],
+        imageUrls: imageUrls,
+        photoSalonIds: photosDocs.map(d => d.id),
         theme: themeChoisi.nom,
         sujet: sujetDuJour,
         caption: texteGenere,
+        promptUsed: prompt,
         recommandationVisuel: themeChoisi.typeVisuel
     };
 }
@@ -810,7 +843,121 @@ exports.appSalon = onRequest({ cors: true, maxInstances: 10 }, async (req, res) 
         }
     }
 
-    // 4. ROUTE API : PUBLIER DIRECT SUR INSTAGRAM (Photo Unique OU Carrousel Multi-Photos)
+    // 4. ROUTE API : GÉNÉRER L'APERÇU DU POST PAR GEMINI (SANS PUBLIER)
+    if (path.includes("/api/generer-preview") && method === "POST") {
+        try {
+            const { pin, photoId, photoIds, themeId, customInstruction, customPrompt } = req.body || {};
+            if (!isPinValid(pin)) {
+                return res.status(403).json({ success: false, error: "Code d'accès salon incorrect." });
+            }
+
+            const ids = Array.isArray(photoIds) && photoIds.length > 0 
+                ? photoIds 
+                : (photoId ? [photoId] : []);
+
+            if (ids.length === 0) {
+                return res.status(400).json({ success: false, error: "Aucune photo sélectionnée." });
+            }
+
+            console.log(`✨ Génération aperçu demandée pour ${ids.length} photo(s)...`);
+            const result = await executerGenerationInstagram({
+                photoIds: ids,
+                themeId: themeId,
+                customInstruction: customInstruction,
+                customPrompt: customPrompt,
+                forcePublish: false,
+                markPhotosUsed: false
+            });
+
+            return res.json(result);
+        } catch (err) {
+            console.error("❌ Erreur génération aperçu :", err);
+            return res.status(500).json({ success: false, error: err.message || String(err) });
+        }
+    }
+
+    // 5. ROUTE API : CONFIRMER ET PUBLIER SUR INSTAGRAM AVEC TEXTE VALIDÉ / RETOUCHÉ
+    if (path.includes("/api/publier-valide") && method === "POST") {
+        try {
+            const { pin, docId, photoIds, caption, imageUrls } = req.body || {};
+            if (!isPinValid(pin)) {
+                return res.status(403).json({ success: false, error: "Code d'accès salon incorrect." });
+            }
+
+            let postRef = null;
+            let finalCaption = caption;
+            let finalImages = imageUrls;
+            let finalPhotoIds = photoIds || [];
+
+            if (docId) {
+                postRef = db.collection("instagram_posts").doc(docId);
+                const s = await postRef.get();
+                if (s.exists) {
+                    const data = s.data();
+                    if (!finalCaption) finalCaption = data.caption;
+                    if (!finalImages || finalImages.length === 0) {
+                        finalImages = data.imageUrls || (data.imageUrl ? [data.imageUrl] : []);
+                    }
+                    if (finalPhotoIds.length === 0 && data.photoSalonIds) {
+                        finalPhotoIds = data.photoSalonIds;
+                    }
+                }
+            }
+
+            if (!finalImages || finalImages.length === 0) {
+                return res.status(400).json({ success: false, error: "Aucune image spécifiée pour la publication." });
+            }
+            if (!finalCaption || !finalCaption.trim()) {
+                return res.status(400).json({ success: false, error: "Le texte de publication ne peut pas être vide." });
+            }
+
+            console.log(`🚀 Publication confirmée pour ${finalImages.length} image(s)...`);
+            const pubResult = await publierSurInstagram(finalImages, finalCaption);
+
+            if (pubResult.success) {
+                if (postRef) {
+                    await postRef.update({
+                        caption: finalCaption,
+                        status: "publie",
+                        instagramMediaId: pubResult.mediaId,
+                        publicationDate: admin.firestore.FieldValue.serverTimestamp(),
+                        publishedAt: admin.firestore.FieldValue.serverTimestamp(),
+                        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+
+                // Marquer les photos comme utilisées dans la réserve
+                for (const pid of finalPhotoIds) {
+                    try {
+                        await db.collection("photos_salon").doc(pid).update({
+                            used: true,
+                            usedAt: admin.firestore.FieldValue.serverTimestamp(),
+                            postId: docId || null
+                        });
+                    } catch (e) {
+                        console.warn("Mise à jour photo salon :", e.message);
+                    }
+                }
+
+                return res.json({ success: true, mediaId: pubResult.mediaId, docId: docId });
+            } else {
+                if (postRef) {
+                    await postRef.update({
+                        caption: finalCaption,
+                        status: "erreur_publication",
+                        errorMessage: pubResult.error,
+                        updatedAt: admin.firestore.FieldValue.serverTimestamp()
+                    });
+                }
+                return res.status(500).json({ success: false, error: pubResult.error, docId: docId });
+            }
+        } catch (err) {
+            console.error("❌ Erreur publier valide :", err);
+            return res.status(500).json({ success: false, error: err.message || String(err) });
+        }
+    }
+
+    // 6. ROUTE API : PUBLIER DIRECT SUR INSTAGRAM (Photo Unique OU Carrousel Multi-Photos)
     if (path.includes("/api/publier-maintenant") && method === "POST") {
         try {
             const { pin, photoId, photoIds } = req.body || {};
@@ -839,7 +986,7 @@ exports.appSalon = onRequest({ cors: true, maxInstances: 10 }, async (req, res) 
         }
     }
 
-    // 5. PAGE D'ACCUEIL : SERVIR L'INTERFACE WEB HTML
+    // 7. PAGE D'ACCUEIL : SERVIR L'INTERFACE WEB HTML
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     return res.status(200).send(getPortalHtml());
 });
