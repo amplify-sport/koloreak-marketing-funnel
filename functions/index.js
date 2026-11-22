@@ -159,7 +159,7 @@ const THEMES_MARKETING = [
  * @param {string} caption - Légende complète avec emojis et hashtags
  * @returns {Promise<{ success: boolean, mediaId?: string, error?: string }>}
  */
-async function publierSurInstagram(imageUrl, caption) {
+async function publierSurInstagram(imageInput, caption) {
     const accountId = process.env.INSTAGRAM_ACCOUNT_ID;
     const token = process.env.INSTAGRAM_ACCESS_TOKEN;
 
@@ -169,48 +169,109 @@ async function publierSurInstagram(imageUrl, caption) {
         return { success: false, error: msg };
     }
 
+    const images = Array.isArray(imageInput) ? imageInput : [imageInput];
+
     try {
-        console.log(`📸 Étape 1 : Création du conteneur média Instagram pour le compte ${accountId}...`);
-        
-        // Étape 1 : Créer le conteneur média
-        const containerUrl = new URL(`https://graph.facebook.com/v20.0/${accountId}/media`);
-        containerUrl.searchParams.append("image_url", imageUrl);
-        containerUrl.searchParams.append("caption", caption);
-        containerUrl.searchParams.append("access_token", token);
+        if (images.length > 1) {
+            console.log(`📸 Création d'un Carrousel Instagram avec ${images.length} photos...`);
+            
+            // 1. Créer chaque item individuel du carrousel
+            const itemIds = [];
+            for (let i = 0; i < images.length; i++) {
+                const itemUrl = new URL(`https://graph.facebook.com/v20.0/${accountId}/media`);
+                itemUrl.searchParams.append("image_url", images[i]);
+                itemUrl.searchParams.append("is_carousel_item", "true");
+                itemUrl.searchParams.append("access_token", token);
 
-        const containerRes = await fetch(containerUrl.toString(), { method: "POST" });
-        const containerData = await containerRes.json();
+                const itemRes = await fetch(itemUrl.toString(), { method: "POST" });
+                const itemData = await itemRes.json();
 
-        if (!containerRes.ok || !containerData.id) {
-            const errStr = JSON.stringify(containerData.error || containerData);
-            console.error("❌ Erreur création conteneur Instagram :", errStr);
-            return { success: false, error: `Création conteneur: ${errStr}` };
+                if (!itemRes.ok || !itemData.id) {
+                    const errStr = JSON.stringify(itemData.error || itemData);
+                    console.error(`❌ Erreur création item carrousel #${i + 1} :`, errStr);
+                    return { success: false, error: `Item carrousel #${i + 1}: ${errStr}` };
+                }
+                itemIds.push(itemData.id);
+            }
+
+            console.log(`✅ ${itemIds.length} items créés. Création du conteneur carrousel...`);
+
+            // 2. Créer le conteneur carrousel principal
+            const carouselUrl = new URL(`https://graph.facebook.com/v20.0/${accountId}/media`);
+            carouselUrl.searchParams.append("media_type", "CAROUSEL");
+            carouselUrl.searchParams.append("children", itemIds.join(","));
+            carouselUrl.searchParams.append("caption", caption);
+            carouselUrl.searchParams.append("access_token", token);
+
+            const carouselRes = await fetch(carouselUrl.toString(), { method: "POST" });
+            const carouselData = await carouselRes.json();
+
+            if (!carouselRes.ok || !carouselData.id) {
+                const errStr = JSON.stringify(carouselData.error || carouselData);
+                console.error("❌ Erreur création conteneur carrousel :", errStr);
+                return { success: false, error: `Conteneur carrousel: ${errStr}` };
+            }
+
+            const creationId = carouselData.id;
+            console.log(`✅ Conteneur carrousel créé (ID: ${creationId}). Attente 4s...`);
+            await new Promise(r => setTimeout(r, 4000));
+
+            // 3. Publier le carrousel
+            const publishUrl = new URL(`https://graph.facebook.com/v20.0/${accountId}/media_publish`);
+            publishUrl.searchParams.append("creation_id", creationId);
+            publishUrl.searchParams.append("access_token", token);
+
+            const publishRes = await fetch(publishUrl.toString(), { method: "POST" });
+            const publishData = await publishRes.json();
+
+            if (!publishRes.ok || !publishData.id) {
+                const errStr = JSON.stringify(publishData.error || publishData);
+                console.error("❌ Erreur publication carrousel :", errStr);
+                return { success: false, error: `Publication carrousel: ${errStr}` };
+            }
+
+            console.log(`🎉 Carrousel Instagram publié avec succès ! ID Média : ${publishData.id}`);
+            return { success: true, mediaId: publishData.id };
+
+        } else {
+            // Publication photo unique classique
+            const singleImageUrl = images[0];
+            console.log(`📸 Étape 1 : Création du conteneur média unique pour le compte ${accountId}...`);
+            
+            const containerUrl = new URL(`https://graph.facebook.com/v20.0/${accountId}/media`);
+            containerUrl.searchParams.append("image_url", singleImageUrl);
+            containerUrl.searchParams.append("caption", caption);
+            containerUrl.searchParams.append("access_token", token);
+
+            const containerRes = await fetch(containerUrl.toString(), { method: "POST" });
+            const containerData = await containerRes.json();
+
+            if (!containerRes.ok || !containerData.id) {
+                const errStr = JSON.stringify(containerData.error || containerData);
+                console.error("❌ Erreur création conteneur Instagram :", errStr);
+                return { success: false, error: `Création conteneur: ${errStr}` };
+            }
+
+            const creationId = containerData.id;
+            console.log(`✅ Conteneur créé avec succès (ID: ${creationId}). Attente 3s...`);
+            await new Promise(r => setTimeout(r, 3000));
+
+            const publishUrl = new URL(`https://graph.facebook.com/v20.0/${accountId}/media_publish`);
+            publishUrl.searchParams.append("creation_id", creationId);
+            publishUrl.searchParams.append("access_token", token);
+
+            const publishRes = await fetch(publishUrl.toString(), { method: "POST" });
+            const publishData = await publishRes.json();
+
+            if (!publishRes.ok || !publishData.id) {
+                const errStr = JSON.stringify(publishData.error || publishData);
+                console.error("❌ Erreur publication finale Instagram :", errStr);
+                return { success: false, error: `Publication: ${errStr}` };
+            }
+
+            console.log(`🎉 Post Instagram publié avec succès ! ID Média : ${publishData.id}`);
+            return { success: true, mediaId: publishData.id };
         }
-
-        const creationId = containerData.id;
-        console.log(`✅ Conteneur créé avec succès (ID: ${creationId}). Attente brève avant publication...`);
-
-        // Petite pause pour s'assurer que le média est prêt chez Instagram
-        await new Promise(r => setTimeout(r, 3000));
-
-        // Étape 2 : Publier le conteneur
-        console.log(`🚀 Étape 2 : Publication finale du média sur le compte Instagram...`);
-        const publishUrl = new URL(`https://graph.facebook.com/v20.0/${accountId}/media_publish`);
-        publishUrl.searchParams.append("creation_id", creationId);
-        publishUrl.searchParams.append("access_token", token);
-
-        const publishRes = await fetch(publishUrl.toString(), { method: "POST" });
-        const publishData = await publishRes.json();
-
-        if (!publishRes.ok || !publishData.id) {
-            const errStr = JSON.stringify(publishData.error || publishData);
-            console.error("❌ Erreur publication finale Instagram :", errStr);
-            return { success: false, error: `Publication: ${errStr}` };
-        }
-
-        console.log(`🎉 Post Instagram publié avec succès ! ID Média : ${publishData.id}`);
-        return { success: true, mediaId: publishData.id };
-
     } catch (err) {
         console.error("❌ Exception lors de l'appel Instagram Graph API :", err);
         return { success: false, error: err.message || String(err) };
@@ -240,19 +301,43 @@ function getPhotoForTheme(themeId) {
 // 4. MOTEUR IA GEMINI : GÉNÉRATION DU POST & ENREGISTREMENT FIRESTORE
 // ============================================================================
 async function executerGenerationInstagram(options = {}) {
-    // 1. Sélection du thème marketing
-    const themeChoisi = options.themeId
-        ? (THEMES_MARKETING.find(t => t.id === options.themeId) || THEMES_MARKETING[0])
-        : THEMES_MARKETING[Math.floor(Math.random() * THEMES_MARKETING.length)];
+    let photosDocs = [];
+    let imageUrls = [];
+    let notesPhotos = [];
+    let themeChoisi = null;
 
-    let photoDoc = null;
-    let imageUrl = options.imageUrl;
-    let notePhoto = options.note || "";
+    // 1. Si des IDs précis de photos ont été sélectionnés
+    if (Array.isArray(options.photoIds) && options.photoIds.length > 0) {
+        for (const pid of options.photoIds) {
+            try {
+                const s = await db.collection("photos_salon").doc(pid).get();
+                if (s.exists) {
+                    photosDocs.push(s);
+                    const d = s.data();
+                    if (d.url) imageUrls.push(d.url);
+                    if (d.note) notesPhotos.push(d.note);
+                    if (!themeChoisi && d.themeId) {
+                        themeChoisi = THEMES_MARKETING.find(t => t.id === d.themeId);
+                    }
+                }
+            } catch (e) {
+                console.warn("Erreur lecture photo doc :", e.message);
+            }
+        }
+    } else if (options.imageUrl) {
+        imageUrls.push(options.imageUrl);
+        if (options.note) notesPhotos.push(options.note);
+    }
 
-    // Si aucune image spécifiée, chercher en priorité une vraie photo du salon dans Firestore
-    if (!imageUrl) {
+    if (!themeChoisi) {
+        themeChoisi = options.themeId
+            ? (THEMES_MARKETING.find(t => t.id === options.themeId) || THEMES_MARKETING[0])
+            : THEMES_MARKETING[Math.floor(Math.random() * THEMES_MARKETING.length)];
+    }
+
+    // 2. Si aucune image spécifiée, chercher en priorité une vraie photo du salon dans Firestore
+    if (imageUrls.length === 0) {
         try {
-            // 1a. Chercher en priorité une vraie photo pour CE thème précis
             const snapTheme = await db.collection("photos_salon")
                 .where("used", "==", false)
                 .where("themeId", "==", themeChoisi.id)
@@ -261,44 +346,48 @@ async function executerGenerationInstagram(options = {}) {
                 .get();
 
             if (!snapTheme.empty) {
-                photoDoc = snapTheme.docs[0];
+                const doc = snapTheme.docs[0];
+                photosDocs.push(doc);
+                imageUrls.push(doc.data().url);
+                if (doc.data().note) notesPhotos.push(doc.data().note);
             } else {
-                // 1b. Sinon, n'importe quelle vraie photo disponible
                 const snapAny = await db.collection("photos_salon")
                     .where("used", "==", false)
                     .orderBy("createdAt", "asc")
                     .limit(1)
                     .get();
                 if (!snapAny.empty) {
-                    photoDoc = snapAny.docs[0];
+                    const doc = snapAny.docs[0];
+                    photosDocs.push(doc);
+                    imageUrls.push(doc.data().url);
+                    if (doc.data().note) notesPhotos.push(doc.data().note);
                 }
-            }
-
-            if (photoDoc) {
-                const pData = photoDoc.data();
-                imageUrl = pData.url;
-                notePhoto = pData.note || "";
-                console.log(`📸 Vraie photo du salon sélectionnée (Doc: ${photoDoc.id}, Thème: ${pData.themeId})`);
             }
         } catch (e) {
             console.warn("⚠️ Recherche photo salon en réserve :", e.message);
         }
     }
 
-    if (!imageUrl) {
-        imageUrl = getPhotoForTheme(themeChoisi.id);
-        console.log("ℹ️ Aucune photo réelle en attente, utilisation du visuel par défaut.");
+    if (imageUrls.length === 0) {
+        imageUrls.push(getPhotoForTheme(themeChoisi.id));
     }
 
+    const isCarousel = imageUrls.length > 1;
     const sujetDuJour = options.sujet || themeChoisi.sujets[Math.floor(Math.random() * themeChoisi.sujets.length)];
     const hashtagsStr = themeChoisi.hashtags.join(" ");
 
     let noteInstruction = "";
-    if (notePhoto && notePhoto.trim()) {
+    if (notesPhotos.length > 0) {
         noteInstruction = `
-INDICATION PARTICULIÈRE DE LA COIFFEUSE SUR CETTE RÉALISATION DU SALON :
-"${notePhoto.trim()}"
+INDICATION PARTICULIÈRE DE LA COIFFEUSE SUR CETTE RÉALISATION :
+"${notesPhotos.join(" • ")}"
 Prends impérativement en compte cette précision dans ton texte pour décrire avec fidélité, élégance et enthousiasme le résultat obtenu en salon.
+`;
+    }
+
+    if (isCarousel) {
+        noteInstruction += `
+NOTE SPÉCIALE CARROUSEL : Cette publication est un CARROUSEL / ALBUM de ${imageUrls.length} photos présentant le travail du salon. Invite explicitement la lectrice à faire défiler vers la gauche pour découvrir la transformation complète et tous les détails de cette réalisation !
 `;
     }
 
@@ -343,9 +432,11 @@ RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
     const postRef = db.collection("instagram_posts").doc();
     const docData = {
         caption: texteGenere,
-        imageUrl: imageUrl,
-        photoSalonId: photoDoc ? photoDoc.id : null,
-        notePhoto: notePhoto || null,
+        imageUrl: imageUrls[0],
+        imageUrls: imageUrls,
+        isCarousel: isCarousel,
+        photoSalonIds: photosDocs.map(d => d.id),
+        notePhoto: notesPhotos.join(" • ") || null,
         themeId: themeChoisi.id,
         themeNom: themeChoisi.nom,
         sujet: sujetDuJour,
@@ -362,12 +453,12 @@ RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
     };
 
     await postRef.set(docData);
-    console.log(`📝 Brouillon créé dans Firestore (ID: ${postRef.id}) pour le thème "${themeChoisi.nom}"`);
+    console.log(`📝 Brouillon créé dans Firestore (ID: ${postRef.id}, Carrousel: ${isCarousel})`);
 
-    // Si une photo réelle a été choisie, la marquer comme utilisée
-    if (photoDoc) {
+    // Marquer les photos du salon comme utilisées
+    for (const pDoc of photosDocs) {
         try {
-            await photoDoc.ref.update({
+            await pDoc.ref.update({
                 used: true,
                 usedAt: admin.firestore.FieldValue.serverTimestamp(),
                 postId: postRef.id
@@ -383,7 +474,7 @@ RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
 
     if (shouldAutoPublish) {
         console.log("🚀 Publication automatique activée, tentative d'envoi vers Instagram...");
-        const pubResult = await publierSurInstagram(imageUrl, texteGenere);
+        const pubResult = await publierSurInstagram(imageUrls, texteGenere);
 
         if (pubResult.success) {
             await postRef.update({
@@ -398,6 +489,7 @@ RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
                 docId: postRef.id,
                 status: "publie",
                 mediaId: pubResult.mediaId,
+                isCarousel: isCarousel,
                 theme: themeChoisi.nom,
                 sujet: sujetDuJour,
                 caption: texteGenere
@@ -423,6 +515,7 @@ RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
         success: true,
         docId: postRef.id,
         status: "brouillon",
+        isCarousel: isCarousel,
         theme: themeChoisi.nom,
         sujet: sujetDuJour,
         caption: texteGenere,
@@ -590,58 +683,62 @@ exports.appSalon = onRequest({ cors: true, maxInstances: 10 }, async (req, res) 
         return providedPin && (String(providedPin).trim() === expected || String(providedPin).trim() === "koloreak");
     }
 
-    // 1. ROUTE API : UPLOAD DE PHOTO DU SALON
+    // 1. ROUTE API : UPLOAD DE PHOTO DU SALON (Simple ou Multiple)
     if (path.includes("/api/upload") && method === "POST") {
         try {
-            const { pin, themeId, photoBase64, note } = req.body || {};
+            const { pin, themeId, photoBase64, note, photos } = req.body || {};
             if (!isPinValid(pin)) {
                 return res.status(403).json({ success: false, error: "Code d'accès salon incorrect." });
             }
-            if (!photoBase64) {
-                return res.status(400).json({ success: false, error: "Aucune image sélectionnée." });
+
+            const photosList = Array.isArray(photos) && photos.length > 0 
+                ? photos 
+                : (photoBase64 ? [{ photoBase64, themeId, note }] : []);
+
+            if (photosList.length === 0) {
+                return res.status(400).json({ success: false, error: "Aucune photo sélectionnée." });
             }
 
-            const matches = photoBase64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
-            const base64Data = matches ? matches[2] : photoBase64;
-            const buffer = Buffer.from(base64Data, "base64");
+            const savedPhotos = [];
+            for (const item of photosList) {
+                if (!item.photoBase64) continue;
+                const matches = item.photoBase64.match(/^data:([A-Za-z-+\/]+);base64,(.+)$/);
+                const base64Data = matches ? matches[2] : item.photoBase64;
+                const buffer = Buffer.from(base64Data, "base64");
 
-            const safeTheme = themeId || "salon_ambiance";
-            const fileName = `salon/${safeTheme}/${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`;
-            const file = bucket.file(fileName);
+                const safeTheme = item.themeId || themeId || "salon_ambiance";
+                const fileName = `salon/${safeTheme}/${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`;
+                const file = bucket.file(fileName);
 
-            await file.save(buffer, {
-                metadata: {
-                    contentType: "image/jpeg",
+                await file.save(buffer, {
                     metadata: {
-                        themeId: safeTheme,
-                        salon: "Koloreak",
-                        uploadedAt: new Date().toISOString()
+                        contentType: "image/jpeg",
+                        metadata: {
+                            themeId: safeTheme,
+                            salon: "Koloreak",
+                            uploadedAt: new Date().toISOString()
+                        }
                     }
-                }
-            });
+                });
 
-            try {
-                await file.makePublic();
-            } catch (e) {
-                // Si accès uniforme activé, les droits allUsers s'appliquent déjà au niveau du bucket
+                const publicUrl = `https://storage.googleapis.com/${BUCKET_NAME}/${fileName}`;
+
+                const photoDoc = await db.collection("photos_salon").add({
+                    themeId: safeTheme,
+                    url: publicUrl,
+                    gcsPath: fileName,
+                    note: (item.note || note || "").trim(),
+                    used: false,
+                    usedAt: null,
+                    postId: null,
+                    createdAt: admin.firestore.FieldValue.serverTimestamp()
+                });
+
+                savedPhotos.push({ id: photoDoc.id, url: publicUrl });
             }
 
-            const publicUrl = `https://storage.googleapis.com/${BUCKET_NAME}/${fileName}`;
-
-            // Enregistrement dans Firestore (collection 'photos_salon')
-            const photoDoc = await db.collection("photos_salon").add({
-                themeId: safeTheme,
-                url: publicUrl,
-                gcsPath: fileName,
-                note: (note || "").trim(),
-                used: false,
-                usedAt: null,
-                postId: null,
-                createdAt: admin.firestore.FieldValue.serverTimestamp()
-            });
-
-            console.log(`📸 Photo ajoutée à la réserve Koloreak (ID: ${photoDoc.id}, Thème: ${safeTheme})`);
-            return res.json({ success: true, photoId: photoDoc.id, url: publicUrl });
+            console.log(`📸 ${savedPhotos.length} photo(s) ajoutée(s) à la réserve Koloreak.`);
+            return res.json({ success: true, count: savedPhotos.length, photos: savedPhotos });
 
         } catch (err) {
             console.error("❌ Erreur upload photo salon :", err);
@@ -713,36 +810,27 @@ exports.appSalon = onRequest({ cors: true, maxInstances: 10 }, async (req, res) 
         }
     }
 
-    // 4. ROUTE API : PUBLIER CETTE PHOTO IMMÉDIATEMENT SUR INSTAGRAM
+    // 4. ROUTE API : PUBLIER DIRECT SUR INSTAGRAM (Photo Unique OU Carrousel Multi-Photos)
     if (path.includes("/api/publier-maintenant") && method === "POST") {
         try {
-            const { pin, photoId } = req.body || {};
+            const { pin, photoId, photoIds } = req.body || {};
             if (!isPinValid(pin)) {
                 return res.status(403).json({ success: false, error: "Code d'accès salon incorrect." });
             }
 
-            let photoData = null;
-            let photoDocRef = null;
-            if (photoId) {
-                photoDocRef = db.collection("photos_salon").doc(photoId);
-                const s = await photoDocRef.get();
-                if (s.exists) photoData = s.data();
+            const idsToPublish = Array.isArray(photoIds) && photoIds.length > 0 
+                ? photoIds 
+                : (photoId ? [photoId] : []);
+
+            if (idsToPublish.length === 0) {
+                return res.status(400).json({ success: false, error: "Aucune photo sélectionnée." });
             }
 
+            console.log(`🚀 Publication directe demandée pour ${idsToPublish.length} photo(s)...`);
             const result = await executerGenerationInstagram({
-                themeId: photoData ? photoData.themeId : undefined,
-                imageUrl: photoData ? photoData.url : undefined,
-                note: photoData ? photoData.note : undefined,
+                photoIds: idsToPublish,
                 forcePublish: true
             });
-
-            if (result.success && photoDocRef) {
-                await photoDocRef.update({
-                    used: true,
-                    usedAt: admin.firestore.FieldValue.serverTimestamp(),
-                    postId: result.docId || null
-                });
-            }
 
             return res.json(result);
         } catch (err) {

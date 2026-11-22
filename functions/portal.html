@@ -37,7 +37,7 @@
             background-color: var(--bg);
             color: var(--text);
             line-height: 1.5;
-            padding-bottom: 60px;
+            padding-bottom: 90px;
         }
 
         /* Top Header */
@@ -339,32 +339,62 @@
             display: none;
         }
 
-        /* Image Preview Box */
+        /* Image Preview Box (Multi-Photos) */
         .preview-box {
             display: none;
             background: #FFFFFF;
             border: 2px solid var(--primary);
             border-radius: 16px;
-            padding: 10px;
+            padding: 12px;
             margin-bottom: 20px;
-            position: relative;
             box-shadow: 0 4px 15px rgba(67, 91, 71, 0.12);
         }
 
-        .preview-img {
+        .preview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(90px, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .preview-thumb-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            height: 90px;
+            background: #EEE;
+        }
+
+        .preview-thumb-img {
             width: 100%;
-            height: auto;
-            max-height: 380px;
+            height: 100%;
             object-fit: cover;
             display: block;
-            border-radius: 12px;
+        }
+
+        .btn-remove-thumb {
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .preview-bar {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 10px 6px 4px;
+            padding-top: 6px;
+            border-top: 1px solid #EEE;
         }
 
         .preview-status {
@@ -473,7 +503,7 @@
             font-size: 14px;
             font-weight: 600;
             box-shadow: 0 8px 30px rgba(0, 0, 0, 0.25);
-            z-index: 100;
+            z-index: 200;
             opacity: 0;
             transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
             display: flex;
@@ -497,7 +527,7 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 14px;
+            margin-bottom: 8px;
         }
 
         .gallery-title {
@@ -517,10 +547,16 @@
             border-radius: 14px;
             overflow: hidden;
             box-shadow: var(--shadow);
-            border: 1px solid var(--border);
+            border: 2px solid var(--border);
             display: flex;
             flex-direction: column;
             position: relative;
+            transition: border-color 0.15s ease;
+        }
+
+        .photo-card.selected-for-carousel {
+            border-color: var(--accent);
+            box-shadow: 0 4px 14px rgba(200, 122, 88, 0.3);
         }
 
         .photo-thumb {
@@ -549,6 +585,25 @@
 
         .photo-badge.used {
             background: rgba(100, 100, 100, 0.8);
+        }
+
+        .photo-chk-wrap {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            z-index: 10;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 6px;
+            padding: 2px 4px;
+            display: flex;
+            align-items: center;
+        }
+
+        .photo-chk {
+            width: 20px;
+            height: 20px;
+            accent-color: var(--accent);
+            cursor: pointer;
         }
 
         .photo-meta {
@@ -598,6 +653,49 @@
             font-size: 14px;
             cursor: pointer;
             padding: 2px 4px;
+            touch-action: manipulation;
+        }
+
+        /* Floating Carousel Bottom Action Bar */
+        .carousel-action-bar {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #2D3E30;
+            color: white;
+            padding: 12px 20px;
+            border-radius: 30px;
+            display: none;
+            align-items: center;
+            gap: 14px;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.4);
+            z-index: 150;
+            max-width: 92%;
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from { transform: translateX(-50%) translateY(50px); opacity: 0; }
+            to { transform: translateX(-50%) translateY(0); opacity: 1; }
+        }
+
+        .carousel-bar-text {
+            font-size: 13px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        .btn-carousel-publish {
+            background: linear-gradient(135deg, var(--accent), #B36846);
+            color: white;
+            border: none;
+            padding: 9px 16px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            white-space: nowrap;
             touch-action: manipulation;
         }
 
@@ -713,16 +811,16 @@
             <!-- Step 2 -->
             <div class="step-label">
                 <span class="step-num">2</span>
-                <span>Prendre ou choisir la photo</span>
+                <span>Prendre ou choisir les photos</span>
             </div>
             
-            <!-- Dual Upload Choices : Direct Camera OR Samsung Gallery -->
+            <!-- Dual Upload Choices : Direct Camera OR Samsung Gallery (Multiple) -->
             <div class="upload-actions-container" id="uploadActionsContainer">
-                <!-- Native Label for Gallery -->
+                <!-- Native Label for Gallery with multiple -->
                 <label for="galleryInput" class="btn-upload-choice">
                     <span class="upload-choice-icon">🖼️</span>
-                    <div class="upload-choice-title">Choisir dans la Galerie</div>
-                    <div class="upload-choice-desc">Vos photos déjà prises</div>
+                    <div class="upload-choice-title">Galerie (Plusieurs photos)</div>
+                    <div class="upload-choice-desc">Sélectionnez 1 ou plusieurs photos</div>
                 </label>
 
                 <!-- Native Label for Camera -->
@@ -734,17 +832,17 @@
             </div>
 
             <!-- Hidden File Inputs -->
-            <!-- Input 1: Gallery without capture -->
-            <input type="file" id="galleryInput" accept="image/*" onchange="handleFileChange(event)">
+            <!-- Input 1: Gallery with multiple attribute enabled -->
+            <input type="file" id="galleryInput" accept="image/*" multiple onchange="handleFileChange(event)">
             <!-- Input 2: Camera with capture -->
             <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleFileChange(event)">
 
-            <!-- Preview box -->
+            <!-- Multi-Photo Preview box -->
             <div class="preview-box" id="previewBox">
-                <img id="previewImg" class="preview-img" alt="Photo sélectionnée">
+                <div class="preview-grid" id="previewGrid"></div>
                 <div class="preview-bar">
-                    <div class="preview-status">✅ Photo prête</div>
-                    <button type="button" class="btn-change-photo" onclick="resetPhoto()">Changer de photo</button>
+                    <div class="preview-status" id="previewCountStatus">✅ 0 photo prête</div>
+                    <button type="button" class="btn-change-photo" onclick="resetPhoto()">Tout effacer</button>
                 </div>
             </div>
 
@@ -757,9 +855,9 @@
             <div class="note-hint">💡 L'intelligence artificielle s'inspirera de votre mot pour rédiger un texte Instagram personnalisé et professionnel !</div>
 
             <!-- Submit Button -->
-            <button type="button" class="btn-submit" id="submitBtn" onclick="uploadPhoto()">
+            <button type="button" class="btn-submit" id="submitBtn" onclick="uploadPhotos()">
                 <span class="spinner" id="spinner"></span>
-                <span id="btnText">✨ Enregistrer la photo pour Instagram</span>
+                <span id="btnText">✨ Enregistrer les photos pour Instagram</span>
             </button>
         </div>
 
@@ -779,11 +877,19 @@
                 <h2 class="gallery-title">📸 Réserve de photos du salon</h2>
                 <button class="btn-quick-view" onclick="loadPhotos()">Actualiser 🔄</button>
             </div>
-            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">💡 Les photos publiées sur Instagram sont conservées 30 jours dans l'historique avant archivage automatique pour préserver votre espace gratuit.</div>
+            <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 12px;">
+                💡 Cochez plusieurs photos pour publier un <strong>Carrousel Instagram</strong> (album défilant) !
+            </div>
             <div class="photos-grid" id="photosGrid">
                 <!-- Dynamically loaded -->
             </div>
         </div>
+    </div>
+
+    <!-- Floating Bottom Bar for Carousel Publishing -->
+    <div class="carousel-action-bar" id="carouselActionBar">
+        <span class="carousel-bar-text" id="carouselBarText">0 photo sélectionnée</span>
+        <button class="btn-carousel-publish" onclick="publierSelectionGroupee()">🚀 Publier en Carrousel</button>
     </div>
 
     <!-- Toast Notification -->
@@ -791,7 +897,8 @@
 
     <script>
         var selectedTheme = "balayage_signature";
-        var currentPhotoBase64 = null;
+        var selectedBase64List = [];
+        var selectedReserveIds = [];
         var DEFAULT_PIN = "64100";
 
         // Dynamic API Base URL resolution
@@ -818,62 +925,102 @@
             }
         }
 
-        // Handle File Selection (Camera or Gallery)
+        // Multi-file selection and optimization
         function handleFileChange(event) {
-            var file = event.target.files && event.target.files[0];
-            if (!file) return;
+            var files = event.target.files;
+            if (!files || files.length === 0) return;
 
-            showToast("Chargement et optimisation de la photo...");
+            showToast("Chargement et optimisation de " + files.length + " photo(s)...");
 
-            var reader = new FileReader();
-            reader.onload = function(evt) {
-                var img = new Image();
-                img.onload = function() {
-                    var maxDim = 1400;
-                    var width = img.width;
-                    var height = img.height;
+            var loadedCount = 0;
+            var total = files.length;
 
-                    if (width > maxDim || height > maxDim) {
-                        if (width > height) {
-                            height = Math.round((height * maxDim) / width);
-                            width = maxDim;
-                        } else {
-                            width = Math.round((width * maxDim) / height);
-                            height = maxDim;
-                        }
-                    }
+            for (var f = 0; f < total; f++) {
+                (function(file) {
+                    var reader = new FileReader();
+                    reader.onload = function(evt) {
+                        var img = new Image();
+                        img.onload = function() {
+                            var maxDim = 1400;
+                            var width = img.width;
+                            var height = img.height;
 
-                    var canvas = document.createElement("canvas");
-                    canvas.width = width;
-                    canvas.height = height;
-                    var ctx = canvas.getContext("2d");
-                    ctx.drawImage(img, 0, 0, width, height);
+                            if (width > maxDim || height > maxDim) {
+                                if (width > height) {
+                                    height = Math.round((height * maxDim) / width);
+                                    width = maxDim;
+                                } else {
+                                    width = Math.round((width * maxDim) / height);
+                                    height = maxDim;
+                                }
+                            }
 
-                    currentPhotoBase64 = canvas.toDataURL("image/jpeg", 0.85);
+                            var canvas = document.createElement("canvas");
+                            canvas.width = width;
+                            canvas.height = height;
+                            var ctx = canvas.getContext("2d");
+                            ctx.drawImage(img, 0, 0, width, height);
 
-                    var previewImg = document.getElementById("previewImg");
-                    previewImg.src = currentPhotoBase64;
-                    document.getElementById("previewBox").style.display = "block";
-                    document.getElementById("uploadActionsContainer").style.display = "none";
-                    showToast("✅ Photo prête !");
-                };
-                img.src = evt.target.result;
-            };
-            reader.readAsDataURL(file);
+                            var base64 = canvas.toDataURL("image/jpeg", 0.85);
+                            selectedBase64List.push(base64);
+
+                            loadedCount++;
+                            if (loadedCount === total) {
+                                renderPreviewGrid();
+                                showToast("✅ " + selectedBase64List.length + " photo(s) prête(s) !");
+                            }
+                        };
+                        img.src = evt.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                })(files[f]);
+            }
+        }
+
+        function renderPreviewGrid() {
+            var grid = document.getElementById("previewGrid");
+            var countStatus = document.getElementById("previewCountStatus");
+            var btnText = document.getElementById("btnText");
+
+            if (selectedBase64List.length === 0) {
+                document.getElementById("previewBox").style.display = "none";
+                document.getElementById("uploadActionsContainer").style.display = "grid";
+                btnText.textContent = "✨ Enregistrer les photos pour Instagram";
+                return;
+            }
+
+            document.getElementById("previewBox").style.display = "block";
+            document.getElementById("uploadActionsContainer").style.display = "none";
+
+            var html = "";
+            for (var i = 0; i < selectedBase64List.length; i++) {
+                html += '<div class="preview-thumb-item">' +
+                    '<img class="preview-thumb-img" src="' + selectedBase64List[i] + '">' +
+                    '<button type="button" class="btn-remove-thumb" onclick="removeSelectedPhoto(' + i + ')" title="Retirer">✕</button>' +
+                '</div>';
+            }
+            grid.innerHTML = html;
+
+            var n = selectedBase64List.length;
+            countStatus.textContent = "✅ " + n + (n > 1 ? " photos prêtes" : " photo prête");
+            btnText.textContent = n > 1 ? "✨ Enregistrer les " + n + " photos pour Instagram" : "✨ Enregistrer la photo pour Instagram";
+        }
+
+        function removeSelectedPhoto(index) {
+            selectedBase64List.splice(index, 1);
+            renderPreviewGrid();
         }
 
         function resetPhoto() {
-            currentPhotoBase64 = null;
-            document.getElementById("previewImg").src = "";
-            document.getElementById("previewBox").style.display = "none";
-            document.getElementById("uploadActionsContainer").style.display = "grid";
+            selectedBase64List = [];
             document.getElementById("galleryInput").value = "";
             document.getElementById("cameraInput").value = "";
+            renderPreviewGrid();
         }
 
-        // Upload to server
-        async function uploadPhoto() {
-            if (!currentPhotoBase64) {
+        // Upload multiple photos to server
+        async function uploadPhotos() {
+            if (selectedBase64List.length === 0) {
                 showToast("⚠️ Veuillez d'abord choisir ou prendre une photo !");
                 return;
             }
@@ -886,35 +1033,42 @@
 
             btn.disabled = true;
             spinner.style.display = "inline-block";
-            btnText.textContent = "Envoi au salon en cours...";
+            btnText.textContent = "Envoi de " + selectedBase64List.length + " photo(s) au salon...";
 
             try {
+                var payloadPhotos = [];
+                for (var i = 0; i < selectedBase64List.length; i++) {
+                    payloadPhotos.push({
+                        photoBase64: selectedBase64List[i],
+                        themeId: selectedTheme,
+                        note: note
+                    });
+                }
+
                 var res = await fetch(API_ROOT + "/upload", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
                         pin: pin,
-                        themeId: selectedTheme,
-                        photoBase64: currentPhotoBase64,
-                        note: note
+                        photos: payloadPhotos
                     })
                 });
 
                 var data = await res.json();
                 if (data.success) {
-                    showToast("🎉 Photo enregistrée ! Prête pour Instagram.");
+                    showToast("🎉 " + data.count + " photo(s) enregistrée(s) avec succès !");
                     resetPhoto();
                     document.getElementById("noteInput").value = "";
                     loadPhotos();
                 } else {
-                    showToast("❌ Erreur : " + (data.error || "Impossible d'envoyer la photo"));
+                    showToast("❌ Erreur : " + (data.error || "Impossible d'envoyer"));
                 }
             } catch (err) {
                 showToast("❌ Erreur réseau. Vérifiez votre connexion.");
             } finally {
                 btn.disabled = false;
                 spinner.style.display = "none";
-                btnText.textContent = "✨ Enregistrer la photo pour Instagram";
+                renderPreviewGrid();
             }
         }
 
@@ -961,18 +1115,25 @@
                 var p = photos[j];
                 var themeLabel = themeNames[p.themeId] || "📸 Salon";
                 var isUsed = p.used;
+                var isSelected = selectedReserveIds.indexOf(p.id) !== -1;
+
                 var statusBadge = isUsed 
                     ? '<span class="photo-badge used">Publiée sur Insta</span>'
                     : '<span class="photo-badge pending">En réserve</span>';
 
+                var chkBox = !isUsed 
+                    ? '<div class="photo-chk-wrap"><input type="checkbox" class="photo-chk" value="' + p.id + '" ' + (isSelected ? 'checked' : '') + ' onchange="toggleSelectReserve(\'' + p.id + '\')"></div>'
+                    : '';
+
                 var postNowBtn = !isUsed 
-                    ? '<button class="btn-post-now" onclick="publierPhoto(\'' + p.id + '\')">Publier direct 🚀</button>'
+                    ? '<button class="btn-post-now" onclick="publierPhotoUnique(\'' + p.id + '\')">Publier direct 🚀</button>'
                     : '<span style="font-size: 10px; color: #888;">Publiée</span>';
 
                 var noteHtml = p.note ? '<div class="photo-note">« ' + escapeHtml(p.note) + ' »</div>' : '<div class="photo-note" style="color:#999;font-style:italic;">Sans note</div>';
 
-                html += '<div class="photo-card">' +
+                html += '<div class="photo-card ' + (isSelected ? 'selected-for-carousel' : '') + '" id="card-' + p.id + '">' +
                     statusBadge +
+                    chkBox +
                     '<img class="photo-thumb" src="' + p.url + '" alt="Photo salon" loading="lazy">' +
                     '<div class="photo-meta">' +
                         '<div style="font-weight: 700; color: var(--primary); margin-bottom: 2px;">' + themeLabel + '</div>' +
@@ -985,9 +1146,78 @@
                 '</div>';
             }
             grid.innerHTML = html;
+            updateCarouselBar();
         }
 
-        async function publierPhoto(photoId) {
+        // Toggle checkbox selection in reserve
+        function toggleSelectReserve(photoId) {
+            var idx = selectedReserveIds.indexOf(photoId);
+            if (idx === -1) {
+                selectedReserveIds.push(photoId);
+            } else {
+                selectedReserveIds.splice(idx, 1);
+            }
+
+            var card = document.getElementById("card-" + photoId);
+            if (card) {
+                if (selectedReserveIds.indexOf(photoId) !== -1) {
+                    card.classList.add("selected-for-carousel");
+                } else {
+                    card.classList.remove("selected-for-carousel");
+                }
+            }
+            updateCarouselBar();
+        }
+
+        function updateCarouselBar() {
+            var bar = document.getElementById("carouselActionBar");
+            var barText = document.getElementById("carouselBarText");
+            var count = selectedReserveIds.length;
+
+            if (count > 0) {
+                bar.style.display = "flex";
+                barText.textContent = count + (count > 1 ? " photos cochées" : " photo cochée");
+            } else {
+                bar.style.display = "none";
+            }
+        }
+
+        // Publish selection as Carrousel
+        async function publierSelectionGroupee() {
+            if (selectedReserveIds.length === 0) return;
+
+            var count = selectedReserveIds.length;
+            var msg = count > 1 
+                ? "Voulez-vous publier ces " + count + " photos sous forme de CARROUSEL Instagram maintenant sur @koloreakshopping ?"
+                : "Voulez-vous publier cette photo sur Instagram maintenant sur @koloreakshopping ?";
+
+            if (!confirm(msg)) return;
+
+            showToast("⏳ Rédaction par l'IA et publication " + (count > 1 ? "du Carrousel" : "du post") + " en cours...");
+            var pin = getSavedPin();
+
+            try {
+                var res = await fetch(API_ROOT + "/publier-maintenant", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ pin: pin, photoIds: selectedReserveIds })
+                });
+                var data = await res.json();
+                if (data.success) {
+                    showToast("🎉 " + (count > 1 ? "Carrousel Instagram" : "Post") + " publié avec succès !");
+                    selectedReserveIds = [];
+                    updateCarouselBar();
+                    loadPhotos();
+                } else {
+                    showToast("❌ Erreur : " + (data.error || "Échec publication"));
+                }
+            } catch (e) {
+                showToast("❌ Erreur de connexion.");
+            }
+        }
+
+        // Publish single photo immediately
+        async function publierPhotoUnique(photoId) {
             if (!confirm("Voulez-vous générer et publier ce post MAINTENANT sur le compte Instagram @koloreakshopping ?")) {
                 return;
             }
@@ -997,7 +1227,7 @@
                 var res = await fetch(API_ROOT + "/publier-maintenant", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ pin: pin, photoId: photoId })
+                    body: JSON.stringify({ pin: pin, photoIds: [photoId] })
                 });
                 var data = await res.json();
                 if (data.success) {
@@ -1023,6 +1253,8 @@
                 var data = await res.json();
                 if (data.success) {
                     showToast("Photo supprimée.");
+                    var idx = selectedReserveIds.indexOf(photoId);
+                    if (idx !== -1) selectedReserveIds.splice(idx, 1);
                     loadPhotos();
                 } else {
                     showToast("Erreur : " + (data.error || "Impossible de supprimer."));
