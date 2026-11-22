@@ -35,7 +35,7 @@ const SALON_INFOS = {
     valeurs: [
         "Coloration 100% végétale et botanique respectueuse du cheveu et de la santé",
         "Balayages et blonds lumineux sur-mesure sans effet barre ni démarcation",
-        "Rituels spa capillaires, massages crâniens relaxants et bien-être holistique",
+        "Soins capillaires, massages crâniens relaxants et bien-être.",
         "Diagnostic visagiste personnalisé et respect de la matière naturelle du cheveu",
         "Ancrage local au Pays Basque (Bayonne), esprit chaleureux et bienveillant"
     ]
@@ -79,15 +79,16 @@ const THEMES_MARKETING = [
         typeVisuel: "Photo de dos et trois-quarts mettant en valeur un dégradé de balayage ondulé (wavy) avec une belle luminosité."
     },
     {
-        id: "spa_bien_etre",
-        nom: "Spa Capillaire & Massage Crânien",
+        id: "Soin bien_etre",
+        nom: "Soin Capillaire Massage Crânien",
         description: "Vivre une véritable parenthèse de détente : rituels de soins profonds, massage relaxant du cuir chevelu, stimulation de la pousse, lâcher-prise total.",
         sujets: [
             "Offrez-vous une parenthèse hors du temps : l'expérience de notre massage crânien pour libérer toutes les tensions.",
             "Le cuir chevelu est le sol de vos cheveux : pourquoi un gommage et un soin profond changent absolument tout.",
-            "Le rituel spa capillaire chez Koloreak : quand le soin des cheveux devient un moment de relaxation holistique.",
+            "Le rituel soin capillaire chez Koloreak : quand le soin des cheveux devient un moment de relaxation holistique.",
             "Fatigue, stress, changement de saison : le protocole idéal pour revitaliser vos racines et stimuler la vitalité.",
-            "Prendre soin de soi au cœur de Bayonne : venez déposer la charge mentale entre nos mains bienveillantes."
+            "Prendre soin de soi au cœur de Bayonne : venez  vous détendre dans notre salon et laissez vos cheveux respirer.",
+
         ],
         hashtags: [
             "#Koloreak", "#SpaCapillaire", "#MassageCranien", "#BienEtreBayonne",
@@ -559,17 +560,13 @@ RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
 // ============================================================================
 // 5. FONCTION PLANIFIÉE : CRÉATION & PUBLICATION PÉRIODIQUE (Mardis, Jeudis, Dimanches)
 // ============================================================================
+// ⏸️ EN PAUSE : Travail en cours avec Aude sur la charte éditoriale et le prompt initial
 exports.genererPostInstagram = onSchedule({
     schedule: "0 12 * * 2,4,0", // Mardis, jeudis et dimanches à 12h00 (heure optimale salon)
     timeZone: "Europe/Paris"
 }, async (event) => {
-    try {
-        console.log("⏳ Lancement de la génération programmée de post Instagram pour Koloreak...");
-        const res = await executerGenerationInstagram();
-        console.log("✅ Résultat post planifié :", res.status, res.docId);
-    } catch (err) {
-        console.error("❌ Erreur lors du déclenchement planifié :", err);
-    }
+    console.log("⏸️ Publications automatiques en pause : en attente de la validation du prompt et des directives salon.");
+    return null;
 });
 
 // ============================================================================
