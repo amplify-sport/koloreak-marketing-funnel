@@ -755,3 +755,41 @@ exports.appSalon = onRequest({ cors: true, maxInstances: 10 }, async (req, res) 
     res.setHeader("Content-Type", "text/html; charset=utf-8");
     return res.status(200).send(getPortalHtml());
 });
+
+// ============================================================================
+// 10. MAINTENANCE AUTOMATIQUE : PURGE DES PHOTOS PUBLIÉES (> 30 JOURS)
+// ============================================================================
+exports.nettoyagePhotosSalon = onSchedule({
+    schedule: "0 3 * * 0", // Chaque dimanche à 03h00 (Europe/Paris)
+    timeZone: "Europe/Paris"
+}, async (event) => {
+    try {
+        console.log("🧹 Lancement du nettoyage automatique des anciennes photos du salon...");
+        const ilYa30Jours = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+
+        // 1. Photos déjà publiées depuis plus de 30 jours (archivées chez Instagram)
+        const snapPubliees = await db.collection("photos_salon")
+            .where("used", "==", true)
+            .where("usedAt", "<=", admin.firestore.Timestamp.fromDate(ilYa30Jours))
+            .limit(100)
+            .get();
+
+        let countSupprimees = 0;
+        for (const doc of snapPubliees.docs) {
+            const data = doc.data();
+            if (data.gcsPath) {
+                try {
+                    await bucket.file(data.gcsPath).delete();
+                } catch (e) {
+                    // Ignorer si déjà supprimé par le cycle de vie GCS
+                }
+            }
+            await doc.ref.delete();
+            countSupprimees++;
+        }
+
+        console.log(`✅ Nettoyage terminé : ${countSupprimees} anciennes photos purgées.`);
+    } catch (err) {
+        console.error("❌ Erreur nettoyage automatique :", err);
+    }
+});
