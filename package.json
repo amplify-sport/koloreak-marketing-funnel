@@ -7,6 +7,7 @@
     "test:prompt": "NODE_PATH=functions/node_modules node scripts/test-gemini-prompt.js",
     "test:instagram": "node scripts/get-instagram-token.js",
     "post:manual": "node scripts/upload-instagram-post.js",
+    "sync:photos": "node scripts/sync-photos.js",
     "inject:clients": "node injecteur-clients.js",
     "deploy:functions": "firebase deploy --only functions",
     "deploy:firestore": "firebase deploy --only firestore",

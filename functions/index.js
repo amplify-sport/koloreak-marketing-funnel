@@ -214,6 +214,25 @@ async function publierSurInstagram(imageUrl, caption) {
     }
 }
 
+let photosCatalog = {};
+try {
+    photosCatalog = require("./photos-catalog.json");
+} catch (e) {
+    photosCatalog = {};
+}
+
+function getPhotoForTheme(themeId) {
+    const list = photosCatalog[themeId] || [];
+    if (list.length > 0) {
+        return list[Math.floor(Math.random() * list.length)];
+    }
+    const allPhotos = Object.values(photosCatalog).flat();
+    if (allPhotos.length > 0) {
+        return allPhotos[Math.floor(Math.random() * allPhotos.length)];
+    }
+    return process.env.DEFAULT_MEDIA_URL || "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80";
+}
+
 // ============================================================================
 // 4. MOTEUR IA GEMINI : GÉNÉRATION DU POST & ENREGISTREMENT FIRESTORE
 // ============================================================================
@@ -225,7 +244,7 @@ async function executerGenerationInstagram(options = {}) {
 
     const sujetDuJour = options.sujet || themeChoisi.sujets[Math.floor(Math.random() * themeChoisi.sujets.length)];
     const hashtagsStr = themeChoisi.hashtags.join(" ");
-    const imageUrl = options.imageUrl || process.env.DEFAULT_MEDIA_URL || "https://images.unsplash.com/photo-1560066984-138dadb4c035?auto=format&fit=crop&w=1200&q=80";
+    const imageUrl = options.imageUrl || getPhotoForTheme(themeChoisi.id);
 
     const prompt = `
 Tu es la gérante et coloriste passionnée du salon de coiffure holistique "${SALON_INFOS.nom}", situé au ${SALON_INFOS.adresse}.
