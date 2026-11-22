@@ -591,7 +591,7 @@ exports.appSalon = onRequest({ cors: true, maxInstances: 10 }, async (req, res) 
     }
 
     // 1. ROUTE API : UPLOAD DE PHOTO DU SALON
-    if (path.endsWith("/api/upload") && method === "POST") {
+    if (path.includes("/api/upload") && method === "POST") {
         try {
             const { pin, themeId, photoBase64, note } = req.body || {};
             if (!isPinValid(pin)) {
@@ -650,7 +650,7 @@ exports.appSalon = onRequest({ cors: true, maxInstances: 10 }, async (req, res) 
     }
 
     // 2. ROUTE API : LISTE DES PHOTOS EN RÉSERVE
-    if (path.endsWith("/api/photos") && method === "GET") {
+    if (path.includes("/api/photos") && method === "GET") {
         try {
             const pin = req.query.pin;
             if (!isPinValid(pin)) {
@@ -682,7 +682,7 @@ exports.appSalon = onRequest({ cors: true, maxInstances: 10 }, async (req, res) 
     }
 
     // 3. ROUTE API : SUPPRIMER UNE PHOTO
-    if (path.endsWith("/api/delete") && method === "POST") {
+    if (path.includes("/api/delete") && method === "POST") {
         try {
             const { pin, photoId } = req.body || {};
             if (!isPinValid(pin)) {
@@ -714,7 +714,7 @@ exports.appSalon = onRequest({ cors: true, maxInstances: 10 }, async (req, res) 
     }
 
     // 4. ROUTE API : PUBLIER CETTE PHOTO IMMÉDIATEMENT SUR INSTAGRAM
-    if (path.endsWith("/api/publier-maintenant") && method === "POST") {
+    if (path.includes("/api/publier-maintenant") && method === "POST") {
         try {
             const { pin, photoId } = req.body || {};
             if (!isPinValid(pin)) {

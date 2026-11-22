@@ -1,7 +1,6 @@
 /**
  * Portail Web Mobile Privé pour le Salon Koloreak
- * Permet à l'équipe du salon d'ajouter des photos réelles depuis leur tablette Samsung ou smartphone,
- * de choisir le thème de la réalisation, d'ajouter une note et de suivre les photos en réserve.
+ * Conçu spécialement pour tablette Samsung, smartphone et ordinateur.
  */
 
 const SALON_PIN_DEFAULT = process.env.SALON_PIN || "64100";
@@ -23,16 +22,16 @@ function getPortalHtml() {
         :root {
             --primary: #435B47;
             --primary-dark: #2D3E30;
-            --primary-light: #EEF3EE;
+            --primary-light: #EBF2EC;
             --accent: #C87A58;
             --gold: #DDB377;
             --bg: #F8F5EE;
             --card-bg: #FFFFFF;
             --text: #2A332B;
             --text-muted: #6B776D;
-            --border: #E3DDD1;
+            --border: #DDD6C7;
             --radius: 18px;
-            --shadow: 0 8px 24px rgba(45, 62, 48, 0.08);
+            --shadow: 0 6px 20px rgba(45, 62, 48, 0.08);
         }
 
         * {
@@ -54,10 +53,10 @@ function getPortalHtml() {
         header {
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
-            padding: 24px 20px 20px;
-            border-bottom-left-radius: 24px;
-            border-bottom-right-radius: 24px;
-            box-shadow: 0 4px 20px rgba(45, 62, 48, 0.15);
+            padding: 20px 18px 18px;
+            border-bottom-left-radius: 22px;
+            border-bottom-right-radius: 22px;
+            box-shadow: 0 4px 18px rgba(45, 62, 48, 0.15);
             position: sticky;
             top: 0;
             z-index: 50;
@@ -78,7 +77,7 @@ function getPortalHtml() {
         }
 
         .brand-icon {
-            font-size: 32px;
+            font-size: 30px;
             line-height: 1;
             background: rgba(255, 255, 255, 0.15);
             padding: 8px;
@@ -86,13 +85,13 @@ function getPortalHtml() {
         }
 
         .brand-name {
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 700;
             letter-spacing: 0.5px;
         }
 
         .brand-subtitle {
-            font-size: 13px;
+            font-size: 12px;
             color: #D3E0D5;
             font-weight: 400;
         }
@@ -110,10 +109,9 @@ function getPortalHtml() {
             border: 1px solid rgba(255, 255, 255, 0.25);
         }
 
-        /* Container */
         .container {
             max-width: 680px;
-            margin: 20px auto 0;
+            margin: 18px auto 0;
             padding: 0 16px;
         }
 
@@ -121,8 +119,8 @@ function getPortalHtml() {
         .stats-banner {
             background: var(--card-bg);
             border-radius: var(--radius);
-            padding: 16px 20px;
-            margin-bottom: 20px;
+            padding: 14px 18px;
+            margin-bottom: 18px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
             display: flex;
@@ -139,11 +137,11 @@ function getPortalHtml() {
         .stats-pill {
             background: var(--primary-light);
             color: var(--primary);
-            font-size: 22px;
+            font-size: 20px;
             font-weight: 800;
-            width: 48px;
-            height: 48px;
-            border-radius: 14px;
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -165,17 +163,18 @@ function getPortalHtml() {
             border: 1px solid var(--border);
             color: var(--primary);
             font-weight: 600;
-            font-size: 13px;
-            padding: 8px 14px;
+            font-size: 12px;
+            padding: 7px 12px;
             border-radius: 20px;
             cursor: pointer;
+            touch-action: manipulation;
         }
 
         /* Card Section */
         .form-card {
             background: var(--card-bg);
             border-radius: var(--radius);
-            padding: 24px 20px;
+            padding: 22px 18px;
             box-shadow: var(--shadow);
             border: 1px solid var(--border);
             margin-bottom: 24px;
@@ -185,18 +184,18 @@ function getPortalHtml() {
             display: flex;
             align-items: center;
             gap: 8px;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 700;
             color: var(--primary-dark);
-            margin-bottom: 14px;
+            margin-bottom: 12px;
         }
 
         .step-num {
             background: var(--primary);
             color: white;
             font-size: 12px;
-            width: 24px;
-            height: 24px;
+            width: 22px;
+            height: 22px;
             border-radius: 50%;
             display: inline-flex;
             align-items: center;
@@ -209,10 +208,10 @@ function getPortalHtml() {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 10px;
-            margin-bottom: 24px;
+            margin-bottom: 22px;
         }
 
-        @media (max-width: 420px) {
+        @media (max-width: 440px) {
             .themes-grid {
                 grid-template-columns: 1fr;
             }
@@ -225,20 +224,47 @@ function getPortalHtml() {
             padding: 12px;
             text-align: left;
             cursor: pointer;
-            transition: all 0.2s ease;
+            transition: all 0.15s ease;
             display: flex;
             align-items: flex-start;
             gap: 10px;
+            touch-action: manipulation;
+            user-select: none;
+            position: relative;
+        }
+
+        .theme-btn * {
+            pointer-events: none;
         }
 
         .theme-btn:active {
-            transform: scale(0.98);
+            transform: scale(0.97);
         }
 
         .theme-btn.active {
             background: var(--primary-light);
             border-color: var(--primary);
             box-shadow: 0 4px 12px rgba(67, 91, 71, 0.15);
+        }
+
+        .theme-check {
+            display: none;
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: var(--primary);
+            color: white;
+            font-size: 10px;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+
+        .theme-btn.active .theme-check {
+            display: flex;
         }
 
         .theme-emoji {
@@ -259,67 +285,79 @@ function getPortalHtml() {
             line-height: 1.3;
         }
 
-        /* Photo Upload Area */
-        .upload-zone {
-            border: 2.5px dashed var(--border);
+        /* Photo Upload Buttons Dual Options */
+        .upload-actions-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        @media (max-width: 440px) {
+            .upload-actions-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .btn-upload-choice {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #FAF7F0;
+            border: 2px dashed var(--border);
             border-radius: 16px;
-            padding: 30px 16px;
+            padding: 20px 14px;
+            cursor: pointer;
             text-align: center;
-            cursor: pointer;
-            background: #FAFAF7;
             transition: all 0.2s ease;
-            position: relative;
-            margin-bottom: 20px;
+            touch-action: manipulation;
         }
 
-        .upload-zone.has-photo {
-            padding: 10px;
-            border-style: solid;
+        .btn-upload-choice:active {
+            transform: scale(0.97);
+            background: var(--primary-light);
             border-color: var(--primary);
-            background: #FFFFFF;
         }
 
-        .upload-icon-box {
-            font-size: 48px;
-            margin-bottom: 8px;
-            display: block;
+        .btn-upload-choice.primary-camera {
+            background: #F2F7F2;
+            border-color: #B5D1B8;
         }
 
-        .upload-btn-fake {
-            display: inline-block;
-            background: var(--primary);
-            color: white;
+        .upload-choice-icon {
+            font-size: 34px;
+            margin-bottom: 6px;
+            line-height: 1;
+        }
+
+        .upload-choice-title {
+            font-size: 14px;
             font-weight: 700;
-            font-size: 15px;
-            padding: 12px 24px;
-            border-radius: 30px;
-            margin-top: 8px;
-            box-shadow: 0 4px 14px rgba(67, 91, 71, 0.25);
+            color: var(--primary-dark);
+            margin-bottom: 2px;
         }
 
-        .upload-hint {
-            font-size: 12px;
+        .upload-choice-desc {
+            font-size: 11px;
             color: var(--text-muted);
-            margin-top: 8px;
         }
 
-        #fileInput {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            opacity: 0;
-            cursor: pointer;
-        }
-
-        /* Image Preview */
-        .preview-wrapper {
+        /* Hidden file inputs */
+        input[type="file"] {
             display: none;
+        }
+
+        /* Image Preview Box */
+        .preview-box {
+            display: none;
+            background: #FFFFFF;
+            border: 2px solid var(--primary);
+            border-radius: 16px;
+            padding: 10px;
+            margin-bottom: 20px;
             position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            max-height: 380px;
+            box-shadow: 0 4px 15px rgba(67, 91, 71, 0.12);
         }
 
         .preview-img {
@@ -331,19 +369,32 @@ function getPortalHtml() {
             border-radius: 12px;
         }
 
-        .preview-change-btn {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.75);
-            backdrop-filter: blur(6px);
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            border-radius: 20px;
+        .preview-bar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 6px 4px;
+        }
+
+        .preview-status {
             font-size: 13px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-change-photo {
+            background: #EEE;
+            border: none;
+            color: #333;
             font-weight: 600;
+            font-size: 12px;
+            padding: 6px 12px;
+            border-radius: 20px;
             cursor: pointer;
+            touch-action: manipulation;
         }
 
         /* Note Input */
@@ -370,7 +421,7 @@ function getPortalHtml() {
         .note-hint {
             font-size: 12px;
             color: var(--text-muted);
-            margin-bottom: 24px;
+            margin-bottom: 20px;
         }
 
         /* Submit Button */
@@ -381,16 +432,17 @@ function getPortalHtml() {
             border: none;
             border-radius: 16px;
             padding: 16px 20px;
-            font-size: 17px;
+            font-size: 16px;
             font-weight: 700;
             letter-spacing: 0.3px;
             cursor: pointer;
-            box-shadow: 0 6px 20px rgba(200, 122, 88, 0.35);
+            box-shadow: 0 6px 18px rgba(200, 122, 88, 0.35);
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
             transition: transform 0.15s ease;
+            touch-action: manipulation;
         }
 
         .btn-submit:active {
@@ -403,11 +455,10 @@ function getPortalHtml() {
             box-shadow: none;
         }
 
-        /* Spinner */
         .spinner {
             display: none;
-            width: 22px;
-            height: 22px;
+            width: 20px;
+            height: 20px;
             border: 3px solid rgba(255, 255, 255, 0.3);
             border-radius: 50%;
             border-top-color: white;
@@ -418,7 +469,7 @@ function getPortalHtml() {
             to { transform: rotate(360deg); }
         }
 
-        /* Notification Toast */
+        /* Toast */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -426,7 +477,7 @@ function getPortalHtml() {
             transform: translateX(-50%) translateY(100px);
             background: #2D3E30;
             color: white;
-            padding: 14px 24px;
+            padding: 14px 22px;
             border-radius: 30px;
             font-size: 14px;
             font-weight: 600;
@@ -436,7 +487,7 @@ function getPortalHtml() {
             transition: all 0.3s cubic-bezier(0.18, 0.89, 0.32, 1.28);
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             max-width: 90%;
             text-align: center;
         }
@@ -446,20 +497,20 @@ function getPortalHtml() {
             opacity: 1;
         }
 
-        /* Gallery Section */
+        /* Gallery */
         .gallery-section {
-            margin-top: 30px;
+            margin-top: 26px;
         }
 
         .gallery-header {
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
         }
 
         .gallery-title {
-            font-size: 18px;
+            font-size: 17px;
             font-weight: 700;
             color: var(--primary-dark);
         }
@@ -546,6 +597,7 @@ function getPortalHtml() {
             font-size: 10px;
             font-weight: 700;
             cursor: pointer;
+            touch-action: manipulation;
         }
 
         .btn-delete-photo {
@@ -555,6 +607,7 @@ function getPortalHtml() {
             font-size: 14px;
             cursor: pointer;
             padding: 2px 4px;
+            touch-action: manipulation;
         }
 
         /* How-to Card */
@@ -562,13 +615,13 @@ function getPortalHtml() {
             background: linear-gradient(135deg, #FFF9F0, #FDF3E7);
             border: 1.5px dashed var(--gold);
             border-radius: var(--radius);
-            padding: 18px 20px;
-            margin-top: 30px;
+            padding: 16px 18px;
+            margin-top: 26px;
         }
 
         .install-guide h4 {
             color: #8C581A;
-            font-size: 15px;
+            font-size: 14px;
             font-weight: 700;
             margin-bottom: 8px;
             display: flex;
@@ -578,7 +631,7 @@ function getPortalHtml() {
 
         .install-guide ol {
             padding-left: 20px;
-            font-size: 13px;
+            font-size: 12px;
             color: #6E4919;
             line-height: 1.6;
         }
@@ -598,21 +651,21 @@ function getPortalHtml() {
 
         .pin-box {
             background: white;
-            border-radius: 24px;
-            padding: 30px 24px;
-            max-width: 360px;
+            border-radius: 22px;
+            padding: 26px 20px;
+            max-width: 340px;
             width: 100%;
             text-align: center;
             box-shadow: 0 10px 40px rgba(0,0,0,0.3);
         }
 
         .pin-icon {
-            font-size: 40px;
-            margin-bottom: 12px;
+            font-size: 36px;
+            margin-bottom: 10px;
         }
 
         .pin-title {
-            font-size: 20px;
+            font-size: 19px;
             font-weight: 800;
             color: var(--primary-dark);
             margin-bottom: 6px;
@@ -621,18 +674,18 @@ function getPortalHtml() {
         .pin-desc {
             font-size: 13px;
             color: var(--text-muted);
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .pin-input {
             width: 100%;
             font-size: 24px;
-            letter-spacing: 8px;
+            letter-spacing: 6px;
             text-align: center;
             padding: 12px;
             border: 2px solid var(--border);
             border-radius: 14px;
-            margin-bottom: 16px;
+            margin-bottom: 14px;
             font-weight: 700;
         }
 
@@ -646,11 +699,12 @@ function getPortalHtml() {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 14px;
+            padding: 13px;
             border-radius: 14px;
             font-size: 16px;
             font-weight: 700;
             cursor: pointer;
+            touch-action: manipulation;
         }
     </style>
 </head>
@@ -661,8 +715,8 @@ function getPortalHtml() {
         <div class="pin-box">
             <div class="pin-icon">🔐</div>
             <h2 class="pin-title">Espace Salon Koloreak</h2>
-            <p class="pin-desc">Entrez le code d'accès du salon (code postal de Bayonne : 64100)</p>
-            <input type="password" id="pinInput" class="pin-input" placeholder="•••••" maxlength="10" inputmode="numeric">
+            <p class="pin-desc">Entrez le code d'accès du salon (code postal : 64100)</p>
+            <input type="password" id="pinInput" class="pin-input" placeholder="•••••" maxlength="10" inputmode="numeric" value="64100">
             <button class="btn-pin" onclick="verifyPin()">Déverrouiller</button>
             <div id="pinError" style="color: #C00; font-size: 12px; margin-top: 10px; display: none;">Code incorrect, réessayez.</div>
         </div>
@@ -706,35 +760,40 @@ function getPortalHtml() {
                 <span>Quel est le thème de cette réalisation ?</span>
             </div>
             <div class="themes-grid" id="themesGrid">
-                <button type="button" class="theme-btn active" data-theme="balayage_signature">
+                <button type="button" class="theme-btn active" id="btn-balayage_signature" onclick="selectTheme('balayage_signature')">
+                    <span class="theme-check">✓</span>
                     <span class="theme-emoji">✨</span>
                     <div>
                         <div class="theme-title">Balayage & Gloss</div>
                         <div class="theme-desc">Blond, reflets lumineux, fondu</div>
                     </div>
                 </button>
-                <button type="button" class="theme-btn" data-theme="coloration_vegetale">
+                <button type="button" class="theme-btn" id="btn-coloration_vegetale" onclick="selectTheme('coloration_vegetale')">
+                    <span class="theme-check">✓</span>
                     <span class="theme-emoji">🌿</span>
                     <div>
                         <div class="theme-title">Coloration Végétale</div>
                         <div class="theme-desc">100% plantes, brillance & soin</div>
                     </div>
                 </button>
-                <button type="button" class="theme-btn" data-theme="spa_bien_etre">
+                <button type="button" class="theme-btn" id="btn-spa_bien_etre" onclick="selectTheme('spa_bien_etre')">
+                    <span class="theme-check">✓</span>
                     <span class="theme-emoji">💆‍♀️</span>
                     <div>
                         <div class="theme-title">Soin Spa & Massage</div>
                         <div class="theme-desc">Rituel détente, massage crânien</div>
                     </div>
                 </button>
-                <button type="button" class="theme-btn" data-theme="avant_apres">
+                <button type="button" class="theme-btn" id="btn-avant_apres" onclick="selectTheme('avant_apres')">
+                    <span class="theme-check">✓</span>
                     <span class="theme-emoji">✂️</span>
                     <div>
                         <div class="theme-title">Avant / Après</div>
                         <div class="theme-desc">Transformation, nouvelle coupe</div>
                     </div>
                 </button>
-                <button type="button" class="theme-btn" data-theme="salon_ambiance" style="grid-column: span 2;">
+                <button type="button" class="theme-btn" id="btn-salon_ambiance" onclick="selectTheme('salon_ambiance')" style="grid-column: span 2;">
+                    <span class="theme-check">✓</span>
                     <span class="theme-emoji">🏠</span>
                     <div>
                         <div class="theme-title">Salon, Équipe & Ambiance</div>
@@ -749,18 +808,35 @@ function getPortalHtml() {
                 <span>Prendre ou choisir la photo</span>
             </div>
             
-            <div class="upload-zone" id="uploadZone">
-                <input type="file" id="fileInput" accept="image/*">
-                <div id="uploadPrompt">
-                    <span class="upload-icon-box">📷</span>
-                    <div style="font-weight: 700; font-size: 16px; color: var(--primary);">Toucher pour prendre une photo</div>
-                    <div class="upload-btn-fake">Appareil photo / Galerie</div>
-                    <div class="upload-hint">Sur la tablette Samsung, choisissez directement l'appareil photo ou la galerie</div>
-                </div>
+            <!-- Dual Upload Choices : Direct Camera OR Samsung Gallery -->
+            <div class="upload-actions-container" id="uploadActionsContainer">
+                <!-- Native Label for Gallery -->
+                <label for="galleryInput" class="btn-upload-choice">
+                    <span class="upload-choice-icon">🖼️</span>
+                    <div class="upload-choice-title">Choisir dans la Galerie</div>
+                    <div class="upload-choice-desc">Vos photos déjà prises</div>
+                </label>
 
-                <div class="preview-wrapper" id="previewWrapper">
-                    <img id="previewImg" class="preview-img" alt="Aperçu">
-                    <button type="button" class="preview-change-btn" onclick="triggerFileInput(event)">Changer</button>
+                <!-- Native Label for Camera -->
+                <label for="cameraInput" class="btn-upload-choice primary-camera">
+                    <span class="upload-choice-icon">📸</span>
+                    <div class="upload-choice-title">Prendre une Photo</div>
+                    <div class="upload-choice-desc">Appareil photo en direct</div>
+                </label>
+            </div>
+
+            <!-- Hidden File Inputs -->
+            <!-- Input 1: Gallery without capture -->
+            <input type="file" id="galleryInput" accept="image/*" onchange="handleFileChange(event)">
+            <!-- Input 2: Camera with capture -->
+            <input type="file" id="cameraInput" accept="image/*" capture="environment" onchange="handleFileChange(event)">
+
+            <!-- Preview box -->
+            <div class="preview-box" id="previewBox">
+                <img id="previewImg" class="preview-img" alt="Photo sélectionnée">
+                <div class="preview-bar">
+                    <div class="preview-status">✅ Photo prête</div>
+                    <button type="button" class="btn-change-photo" onclick="resetPhoto()">Changer de photo</button>
                 </div>
             </div>
 
@@ -769,7 +845,7 @@ function getPortalHtml() {
                 <span class="step-num">3</span>
                 <span>Un détail pour Instagram ? <span style="font-weight: normal; font-size: 13px; color: var(--text-muted);">(facultatif)</span></span>
             </div>
-            <textarea id="noteInput" class="note-input" placeholder="Ex: Balayage miel doré sur brune naturelle, ou rituel ayurvédique aux poudres..."></textarea>
+            <textarea id="noteInput" class="note-input" placeholder="Ex: Balayage miel doré sur base châtain, ou rituel ayurvédique aux poudres..."></textarea>
             <div class="note-hint">💡 L'intelligence artificielle s'inspirera de votre mot pour rédiger un texte Instagram personnalisé et professionnel !</div>
 
             <!-- Submit Button -->
@@ -783,7 +859,7 @@ function getPortalHtml() {
         <div class="install-guide">
             <h4>📲 Comment avoir cette page comme une application sur la tablette ?</h4>
             <ol>
-                <li>Touchez les <strong>3 petits points ⋮</strong> en haut à droite de Google Chrome (ou le bouton Partager sur iPad).</li>
+                <li>Touchez les <strong>3 petits points ⋮</strong> en haut à droite de Google Chrome (ou bouton Partager sur iPad).</li>
                 <li>Appuyez sur <strong>« Ajouter à l'écran d'accueil »</strong>.</li>
                 <li>Validez : l'icône 🌿 <strong>Koloreak</strong> apparaît sur votre écran d'accueil comme une vraie application !</li>
             </ol>
@@ -809,19 +885,22 @@ function getPortalHtml() {
         let currentPhotoBase64 = null;
         const DEFAULT_PIN = "64100";
 
+        // Dynamic API Base URL resolution (works on Cloud Run & Cloud Functions)
+        const API_ROOT = (window.location.pathname.replace(/\\/$/, "") || "") + "/api";
+
         // Check PIN on load
         function getSavedPin() {
-            return localStorage.getItem("koloreak_salon_pin") || "";
+            return localStorage.getItem("koloreak_salon_pin") || DEFAULT_PIN;
         }
 
         function checkAuth() {
-            const pin = getSavedPin();
+            const pin = localStorage.getItem("koloreak_salon_pin");
             if (!pin) {
-                document.getElementById("pinModal").style.display = "flex";
-            } else {
-                document.getElementById("pinModal").style.display = "none";
-                loadPhotos();
+                // Pre-save default PIN so user is immediately ready
+                localStorage.setItem("koloreak_salon_pin", DEFAULT_PIN);
             }
+            document.getElementById("pinModal").style.display = "none";
+            loadPhotos();
         }
 
         function verifyPin() {
@@ -835,36 +914,26 @@ function getPortalHtml() {
             }
         }
 
-        // Theme selection
-        document.querySelectorAll(".theme-btn").forEach(btn => {
-            btn.addEventListener("click", () => {
-                document.querySelectorAll(".theme-btn").forEach(b => b.classList.remove("active"));
-                btn.classList.add("active");
-                selectedTheme = btn.dataset.theme;
-            });
-        });
-
-        // Photo Handling & Downscaling
-        const fileInput = document.getElementById("fileInput");
-        const uploadZone = document.getElementById("uploadZone");
-        const uploadPrompt = document.getElementById("uploadPrompt");
-        const previewWrapper = document.getElementById("previewWrapper");
-        const previewImg = document.getElementById("previewImg");
-
-        function triggerFileInput(e) {
-            e.stopPropagation();
-            fileInput.click();
+        // Theme selection - direct and bulletproof
+        function selectTheme(themeId) {
+            selectedTheme = themeId;
+            document.querySelectorAll(".theme-btn").forEach(btn => btn.classList.remove("active"));
+            const active = document.getElementById("btn-" + themeId);
+            if (active) active.classList.add("active");
         }
 
-        fileInput.addEventListener("change", function(e) {
-            const file = e.target.files[0];
+        // Handle File Selection (from either Camera or Gallery)
+        function handleFileChange(event) {
+            const file = event.target.files && event.target.files[0];
             if (!file) return;
+
+            showToast("Chargement et optimisation de la photo...");
 
             const reader = new FileReader();
             reader.onload = function(evt) {
                 const img = new Image();
                 img.onload = function() {
-                    // Resize to max 1400px to ensure fast upload and perfect Instagram quality
+                    // Safe aspect ratio resizing to max 1400px (clean portrait and landscape)
                     const maxDim = 1400;
                     let width = img.width;
                     let height = img.height;
@@ -875,8 +944,6 @@ function getPortalHtml() {
                             width = maxDim;
                         } else {
                             width = Math.round((width * maxDim) / height);
-                            maxDim;
-                            width = Math.round((width * maxDim) / img.height);
                             height = maxDim;
                         }
                     }
@@ -888,20 +955,32 @@ function getPortalHtml() {
                     ctx.drawImage(img, 0, 0, width, height);
 
                     currentPhotoBase64 = canvas.toDataURL("image/jpeg", 0.85);
+
+                    // Show preview
+                    const previewImg = document.getElementById("previewImg");
                     previewImg.src = currentPhotoBase64;
-                    uploadPrompt.style.display = "none";
-                    previewWrapper.style.display = "block";
-                    uploadZone.classList.add("has-photo");
+                    document.getElementById("previewBox").style.display = "block";
+                    document.getElementById("uploadActionsContainer").style.display = "none";
+                    showToast("✅ Photo prête !");
                 };
                 img.src = evt.target.result;
             };
             reader.readAsDataURL(file);
-        });
+        }
+
+        function resetPhoto() {
+            currentPhotoBase64 = null;
+            document.getElementById("previewImg").src = "";
+            document.getElementById("previewBox").style.display = "none";
+            document.getElementById("uploadActionsContainer").style.display = "grid";
+            document.getElementById("galleryInput").value = "";
+            document.getElementById("cameraInput").value = "";
+        }
 
         // Upload to server
         async function uploadPhoto() {
             if (!currentPhotoBase64) {
-                showToast("⚠️ Veuillez d'abord prendre ou choisir une photo !");
+                showToast("⚠️ Veuillez d'abord choisir ou prendre une photo !");
                 return;
             }
 
@@ -909,14 +988,14 @@ function getPortalHtml() {
             const spinner = document.getElementById("spinner");
             const btnText = document.getElementById("btnText");
             const note = document.getElementById("noteInput").value.trim();
-            const pin = getSavedPin() || DEFAULT_PIN;
+            const pin = getSavedPin();
 
             btn.disabled = true;
             spinner.style.display = "inline-block";
             btnText.textContent = "Envoi au salon en cours...";
 
             try {
-                const res = await fetch("api/upload", {
+                const res = await fetch(API_ROOT + "/upload", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({
@@ -930,14 +1009,8 @@ function getPortalHtml() {
                 const data = await res.json();
                 if (data.success) {
                     showToast("🎉 Photo enregistrée ! Prête pour Instagram.");
-                    // Reset
-                    currentPhotoBase64 = null;
-                    previewImg.src = "";
-                    previewWrapper.style.display = "none";
-                    uploadPrompt.style.display = "block";
-                    uploadZone.classList.remove("has-photo");
+                    resetPhoto();
                     document.getElementById("noteInput").value = "";
-                    fileInput.value = "";
                     loadPhotos();
                 } else {
                     showToast("❌ Erreur : " + (data.error || "Impossible d'envoyer la photo"));
@@ -953,9 +1026,9 @@ function getPortalHtml() {
 
         // Load recent photos
         async function loadPhotos() {
-            const pin = getSavedPin() || DEFAULT_PIN;
+            const pin = getSavedPin();
             try {
-                const res = await fetch("api/photos?pin=" + encodeURIComponent(pin));
+                const res = await fetch(API_ROOT + "/photos?pin=" + encodeURIComponent(pin));
                 const data = await res.json();
                 if (data.success && data.photos) {
                     renderGallery(data.photos);
@@ -1017,9 +1090,9 @@ function getPortalHtml() {
                 return;
             }
             showToast("⏳ Rédaction par l'IA et publication Instagram en cours...");
-            const pin = getSavedPin() || DEFAULT_PIN;
+            const pin = getSavedPin();
             try {
-                const res = await fetch("api/publier-maintenant", {
+                const res = await fetch(API_ROOT + "/publier-maintenant", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ pin, photoId })
@@ -1038,9 +1111,9 @@ function getPortalHtml() {
 
         async function deletePhoto(photoId) {
             if (!confirm("Supprimer cette photo de la réserve ?")) return;
-            const pin = getSavedPin() || DEFAULT_PIN;
+            const pin = getSavedPin();
             try {
-                const res = await fetch("api/delete", {
+                const res = await fetch(API_ROOT + "/delete", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ pin, photoId })
@@ -1049,6 +1122,8 @@ function getPortalHtml() {
                 if (data.success) {
                     showToast("Photo supprimée.");
                     loadPhotos();
+                } catch (e) {
+                    showToast("Erreur lors de la suppression.");
                 }
             } catch (e) {
                 showToast("Erreur lors de la suppression.");
@@ -1059,7 +1134,7 @@ function getPortalHtml() {
             const toast = document.getElementById("toast");
             toast.textContent = msg;
             toast.classList.add("show");
-            setTimeout(() => toast.classList.remove("show"), 4000);
+            setTimeout(() => toast.classList.remove("show"), 3500);
         }
 
         function scrollToGallery() {
@@ -1070,7 +1145,7 @@ function getPortalHtml() {
             return text.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
         }
 
-        // Init
+        // Init on load
         checkAuth();
     </script>
 </body>
