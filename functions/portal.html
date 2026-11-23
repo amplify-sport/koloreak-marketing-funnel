@@ -1165,6 +1165,192 @@
             cursor: not-allowed;
         }
 
+        /* Mode Review / Automatic Switch Card */
+        .mode-control-card {
+            background: #FFFFFF;
+            border: 2px solid var(--accent);
+            border-radius: 16px;
+            padding: 14px 16px;
+            margin-top: 16px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 16px rgba(200, 122, 88, 0.12);
+            transition: all 0.3s ease;
+        }
+
+        .mode-control-card.is-automatic {
+            border-color: #8C9F8A;
+            background: #FAFDF9;
+            box-shadow: 0 4px 16px rgba(67, 91, 71, 0.08);
+        }
+
+        .mode-checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            cursor: pointer;
+            width: 100%;
+            user-select: none;
+        }
+
+        .switch-wrap {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 28px;
+            flex-shrink: 0;
+        }
+
+        .switch-wrap input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .switch-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #CCD2CB;
+            transition: 0.3s;
+            border-radius: 28px;
+        }
+
+        .switch-slider:before {
+            position: absolute;
+            content: "";
+            height: 22px;
+            width: 22px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: 0.3s;
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+        }
+
+        .switch-wrap input:checked + .switch-slider {
+            background-color: var(--accent);
+        }
+
+        .switch-wrap input:checked + .switch-slider:before {
+            transform: translateX(20px);
+        }
+
+        .mode-control-info {
+            flex: 1;
+        }
+
+        .mode-title-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .mode-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .mode-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 800;
+            text-transform: lowercase;
+            letter-spacing: 0.5px;
+        }
+
+        .mode-badge.badge-preview {
+            background: #FDF1EB;
+            color: var(--accent);
+            border: 1px solid rgba(200, 122, 88, 0.35);
+        }
+
+        .mode-badge.badge-auto {
+            background: #EBF2EC;
+            color: var(--primary);
+            border: 1px solid rgba(67, 91, 71, 0.35);
+        }
+
+        .mode-desc {
+            font-size: 11.5px;
+            color: var(--text-muted);
+            margin-top: 3px;
+            line-height: 1.4;
+        }
+
+        .btn-validation-action {
+            width: 100%;
+            background: linear-gradient(135deg, var(--accent), #B36846);
+            color: white;
+            border: none;
+            border-radius: 16px;
+            padding: 15px 18px;
+            font-size: 14.5px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(200, 122, 88, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            touch-action: manipulation;
+            transition: all 0.2s ease;
+        }
+
+        .btn-validation-action.btn-auto-style {
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            box-shadow: 0 4px 15px rgba(67, 91, 71, 0.25);
+        }
+
+        .btn-validation-action:active {
+            transform: scale(0.98);
+        }
+
+        .btn-reserve-only {
+            width: 100%;
+            background: transparent;
+            color: var(--text-muted);
+            border: 1.5px dashed var(--border);
+            border-radius: 14px;
+            padding: 11px 14px;
+            font-size: 12.5px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            margin-top: 8px;
+            touch-action: manipulation;
+            transition: all 0.2s ease;
+        }
+
+        .btn-reserve-only:hover {
+            background: #F3EFE6;
+            color: var(--text);
+        }
+
+        .validation-control-banner {
+            background: #FDF1EB;
+            border: 1.5px solid rgba(200, 122, 88, 0.4);
+            border-radius: 12px;
+            padding: 10px 14px;
+            font-size: 12px;
+            color: #7A3D24;
+            line-height: 1.45;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
         .btn-submit-preview {
             width: 100%;
             background: linear-gradient(135deg, var(--primary), var(--primary-dark));
@@ -1270,39 +1456,39 @@
                     <span class="theme-emoji">✨</span>
                     <div>
                         <div class="theme-title">Balayage & Gloss</div>
-                        <div class="theme-desc">Blond, reflets lumineux, fondu</div>
+                        <div class="theme-desc">Blond sur-mesure, dépollution fibre & patine gloss</div>
                     </div>
                 </button>
                 <button type="button" class="theme-btn" id="btn-coloration_vegetale" onclick="selectTheme('coloration_vegetale')">
                     <span class="theme-check">✓</span>
                     <span class="theme-emoji">🌿</span>
                     <div>
-                        <div class="theme-title">Coloration Végétale</div>
-                        <div class="theme-desc">100% plantes, brillance & soin</div>
+                        <div class="theme-title">Coloration Végétale & Douce</div>
+                        <div class="theme-desc">100% plantes sans chimie ou chimie douce protectrice</div>
                     </div>
                 </button>
                 <button type="button" class="theme-btn" id="btn-spa_bien_etre" onclick="selectTheme('spa_bien_etre')">
                     <span class="theme-check">✓</span>
                     <span class="theme-emoji">💆‍♀️</span>
                     <div>
-                        <div class="theme-title">Soin Spa & Massage</div>
-                        <div class="theme-desc">Rituel détente, massage crânien</div>
+                        <div class="theme-title">Soin Détente & Massage</div>
+                        <div class="theme-desc">Argile sous chaleur douce, Green Botox, massage</div>
                     </div>
                 </button>
                 <button type="button" class="theme-btn" id="btn-avant_apres" onclick="selectTheme('avant_apres')">
                     <span class="theme-check">✓</span>
                     <span class="theme-emoji">✂️</span>
                     <div>
-                        <div class="theme-title">Avant / Après</div>
-                        <div class="theme-desc">Transformation, nouvelle coupe</div>
+                        <div class="theme-title">Avant / Après & Coupes</div>
+                        <div class="theme-desc">Transformation, nouvelle coupe & texture saine</div>
                     </div>
                 </button>
                 <button type="button" class="theme-btn" id="btn-salon_ambiance" onclick="selectTheme('salon_ambiance')" style="grid-column: span 2;">
                     <span class="theme-check">✓</span>
                     <span class="theme-emoji">🏠</span>
                     <div>
-                        <div class="theme-title">Salon, Équipe & Ambiance</div>
-                        <div class="theme-desc">Le salon, l'équipe au travail, détails déco, coin tisane</div>
+                        <div class="theme-title">Salon, Décoration Terracotta & Bois</div>
+                        <div class="theme-desc">Murs terre cuite & pigments naturels, mobilier bois, cadre apaisant</div>
                     </div>
                 </button>
             </div>
@@ -1350,17 +1536,38 @@
                 <span class="step-num">3</span>
                 <span>Un détail pour Instagram ? <span style="font-weight: normal; font-size: 13px; color: var(--text-muted);">(facultatif)</span></span>
             </div>
-            <textarea id="noteInput" class="note-input" placeholder="Ex: Balayage miel doré sur base châtain, ou rituel ayurvédique aux poudres..."></textarea>
-            <div class="note-hint">💡 L'intelligence artificielle s'inspirera de votre mot pour rédiger un texte Instagram personnalisé et professionnel !</div>
+            <textarea id="noteInput" class="note-input" placeholder="Ex: Balayage lumineux miel doré, coloration végétale aux poudres de plantes, soin détente à l'argile sous chaleur douce..."></textarea>
+            <div class="note-hint">💡 L'intelligence artificielle s'inspirera de votre mot pour rédiger un texte Instagram valorisant vos produits naturels et votre savoir-faire !</div>
 
-            <!-- Submit Buttons -->
-            <button type="button" class="btn-submit" id="submitBtn" onclick="uploadPhotos(false)">
-                <span class="spinner" id="spinner"></span>
-                <span id="btnText">📥 Enregistrer dans la réserve (posts automatiques)</span>
+            <!-- Sélecteur de Mode : Review (Preview post) vs Automatique (Automatic post) -->
+            <div class="mode-control-card" id="modeControlCard">
+                <label class="mode-checkbox-label" for="modeValidationToggle">
+                    <div class="switch-wrap">
+                        <input type="checkbox" id="modeValidationToggle" checked onchange="handleModeChange()">
+                        <span class="switch-slider"></span>
+                    </div>
+                    <div class="mode-control-info">
+                        <div class="mode-title-row">
+                            <span class="mode-title" id="modeTitle">Contrôle avant publication</span>
+                            <span class="mode-badge badge-preview" id="modeBadgeText">preview post</span>
+                        </div>
+                        <div class="mode-desc" id="modeDesc">
+                            Mode Review : validation manuelle obligatoire avant diffusion. Vous relisez et confirmez le post avant qu'il parte sur Instagram.
+                        </div>
+                    </div>
+                </label>
+            </div>
+
+            <!-- Bouton d'action principal dynamique (validation avant de poster) -->
+            <button type="button" class="btn-validation-action" id="btnMainAction" onclick="handleMainAction()">
+                <span class="spinner" id="spinnerMain" style="display:none;"></span>
+                <span id="btnMainActionText">🛡️ Validation avant de poster les messages sur Instagram</span>
             </button>
-            <button type="button" class="btn-submit-preview" id="submitPreviewBtn" onclick="uploadPhotos(true)">
-                <span class="spinner" id="spinnerPreview" style="display:none;"></span>
-                <span id="btnPreviewText">✨ Enregistrer & Prévisualiser le post tout de suite</span>
+
+            <!-- Option secondaire : Enregistrer en réserve sans publier tout de suite -->
+            <button type="button" class="btn-reserve-only" id="btnReserveOnly" onclick="uploadPhotos(false)">
+                <span class="spinner" id="spinnerReserve" style="display:none;"></span>
+                <span id="btnReserveOnlyText">📥 Enregistrer uniquement dans la réserve (pour plus tard)</span>
             </button>
         </div>
 
@@ -1392,7 +1599,7 @@
     <!-- Floating Bottom Bar for Carousel Publishing -->
     <div class="carousel-action-bar" id="carouselActionBar">
         <span class="carousel-bar-text" id="carouselBarText">0 photo sélectionnée</span>
-        <button class="btn-carousel-publish" onclick="previsualiserSelectionGroupee()">✨ Aperçu & Publier Carrousel</button>
+        <button class="btn-carousel-publish" onclick="previsualiserSelectionGroupee()">🛡️ Valider Carrousel & Poster</button>
     </div>
 
     <!-- Modal Prévisualisation Instagram -->
@@ -1401,7 +1608,7 @@
             <div class="modal-header">
                 <div class="modal-title">
                     <span>🌿</span>
-                    <span>Prévisualisation Instagram @koloreakshopping</span>
+                    <span>Validation & Prévisualisation Instagram @koloreakshopping</span>
                 </div>
                 <button type="button" class="btn-close-modal" onclick="closePreviewModal()" title="Fermer">✕</button>
             </div>
@@ -1484,6 +1691,9 @@
 
                     <!-- Caption Section (Editable) -->
                     <div class="insta-caption-area">
+                        <div class="validation-control-banner">
+                            🛡️ <span><strong>Contrôle de la coiffeuse :</strong> Vous gardez la main avant publication. Relisez ou ajustez le texte ci-dessous, puis validez pour diffuser sur Instagram.</span>
+                        </div>
                         <div class="caption-header-row">
                             <span class="caption-title">✍️ Légende générée par Gemini (modifiable) :</span>
                             <span class="caption-counter" id="captionCounter">0 caractères</span>
@@ -1537,7 +1747,7 @@
                 <button type="button" class="btn-modal-cancel" onclick="closePreviewModal()">Fermer</button>
                 <button type="button" class="btn-modal-publish" id="btnModalPublish" onclick="confirmerPublicationInstagram()">
                     <span class="spinner" id="publishSpinner" style="display:none;"></span>
-                    <span id="btnModalPublishText">🚀 Publier direct (sans musique)</span>
+                    <span id="btnModalPublishText">✅ Validation avant de poster sur Instagram</span>
                 </button>
             </div>
         </div>
@@ -1669,23 +1879,99 @@
             renderPreviewGrid();
         }
 
-        // Upload multiple photos to server (Optionally open preview right away)
-        async function uploadPhotos(openPreview) {
+        // ====================================================================
+        // GESTION DU MODE DE PUBLICATION : REVIEW (PREVIEW) VS AUTOMATIQUE
+        // ====================================================================
+        var isReviewMode = true; // Par défaut mode Review (Preview post) pour contrôle coiffeuse
+
+        function initPostingMode() {
+            var saved = localStorage.getItem("koloreak_posting_mode");
+            if (saved !== null) {
+                isReviewMode = (saved === "review");
+            } else {
+                isReviewMode = true;
+            }
+            var toggle = document.getElementById("modeValidationToggle");
+            if (toggle) {
+                toggle.checked = isReviewMode;
+            }
+            updateModeUI();
+        }
+
+        function handleModeChange() {
+            var toggle = document.getElementById("modeValidationToggle");
+            isReviewMode = toggle.checked;
+            localStorage.setItem("koloreak_posting_mode", isReviewMode ? "review" : "auto");
+            updateModeUI();
+        }
+
+        function updateModeUI() {
+            var card = document.getElementById("modeControlCard");
+            var badge = document.getElementById("modeBadgeText");
+            var title = document.getElementById("modeTitle");
+            var desc = document.getElementById("modeDesc");
+            var btn = document.getElementById("btnMainAction");
+            var btnText = document.getElementById("btnMainActionText");
+
+            if (isReviewMode) {
+                if (card) card.classList.remove("is-automatic");
+                if (badge) {
+                    badge.className = "mode-badge badge-preview";
+                    badge.textContent = "preview post";
+                }
+                if (title) title.textContent = "Contrôle avant publication";
+                if (desc) desc.textContent = "Mode Review : validation manuelle obligatoire avant diffusion. Vous relisez et confirmez le post avant qu'il parte sur Instagram.";
+                if (btn) btn.classList.remove("btn-auto-style");
+                if (btnText) btnText.innerHTML = "🛡️ Validation avant de poster les messages sur Instagram";
+            } else {
+                if (card) card.classList.add("is-automatic");
+                if (badge) {
+                    badge.className = "mode-badge badge-auto";
+                    badge.textContent = "automatic post";
+                }
+                if (title) title.textContent = "Mode Automatique actif";
+                if (desc) desc.textContent = "Publication directe sans étape de validation préalable : le post sera directement envoyé sur votre compte Instagram.";
+                if (btn) btn.classList.add("btn-auto-style");
+                if (btnText) btnText.innerHTML = "🚀 Enregistrer & Publier directement sur Instagram";
+            }
+        }
+
+        async function handleMainAction() {
+            if (isReviewMode) {
+                // Mode Review : Enregistrer et ouvrir la prévisualisation pour validation
+                await uploadPhotos(true, false);
+            } else {
+                // Mode Automatique : Enregistrer et publier directement
+                if (!confirm("🚀 Mode Automatic post actif : publier directement ce post sur Instagram @koloreakshopping sans étape de validation préalable ?")) {
+                    return;
+                }
+                await uploadPhotos(false, true);
+            }
+        }
+
+        // Upload multiple photos to server (Optionally open preview or direct publish)
+        async function uploadPhotos(openPreview, directPublish) {
             if (selectedBase64List.length === 0) {
                 showToast("⚠️ Veuillez d'abord choisir ou prendre une photo !");
                 return;
             }
 
-            var btn = openPreview ? document.getElementById("submitPreviewBtn") : document.getElementById("submitBtn");
-            var spinner = openPreview ? document.getElementById("spinnerPreview") : document.getElementById("spinner");
-            var btnText = openPreview ? document.getElementById("btnPreviewText") : document.getElementById("btnText");
+            var btn = (openPreview || directPublish)
+                ? document.getElementById("btnMainAction")
+                : document.getElementById("btnReserveOnly");
+            var spinner = (openPreview || directPublish)
+                ? document.getElementById("spinnerMain")
+                : document.getElementById("spinnerReserve");
+            var btnText = (openPreview || directPublish)
+                ? document.getElementById("btnMainActionText")
+                : document.getElementById("btnReserveOnlyText");
             var note = document.getElementById("noteInput").value.trim();
             var pin = getSavedPin();
 
-            btn.disabled = true;
-            spinner.style.display = "inline-block";
-            var originalText = btnText.textContent;
-            btnText.textContent = "Envoi de " + selectedBase64List.length + " photo(s)...";
+            if (btn) btn.disabled = true;
+            if (spinner) spinner.style.display = "inline-block";
+            var originalText = btnText ? btnText.innerHTML : "";
+            if (btnText) btnText.textContent = "Envoi de " + selectedBase64List.length + " photo(s)...";
 
             try {
                 var payloadPhotos = [];
@@ -1715,8 +2001,26 @@
                     loadPhotos();
 
                     if (openPreview) {
-                        // Open preview modal directly with these uploaded photos
+                        // Ouvrir la prévisualisation pour validation par la coiffeuse
                         ouvrirPreviewModal(newPhotoIds);
+                    } else if (directPublish) {
+                        // Publication directe automatique sans validation
+                        showToast("🚀 Publication automatique sur Instagram en cours...");
+                        var pubRes = await fetch(API_ROOT + "/publier-maintenant", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({
+                                pin: pin,
+                                photoIds: newPhotoIds
+                            })
+                        });
+                        var pubData = await pubRes.json();
+                        if (pubData.success) {
+                            showToast("🎉 Post Instagram publié automatiquement avec succès !");
+                            loadPhotos();
+                        } else {
+                            showToast("⚠️ Échec publication auto : " + (pubData.error || "Erreur"));
+                        }
                     }
                 } else {
                     showToast("❌ Erreur : " + (data.error || "Impossible d'envoyer"));
@@ -1724,9 +2028,9 @@
             } catch (err) {
                 showToast("❌ Erreur réseau. Vérifiez votre connexion.");
             } finally {
-                btn.disabled = false;
-                spinner.style.display = "none";
-                btnText.textContent = originalText;
+                if (btn) btn.disabled = false;
+                if (spinner) spinner.style.display = "none";
+                if (btnText) btnText.innerHTML = originalText;
                 renderPreviewGrid();
             }
         }
@@ -1785,7 +2089,7 @@
                     : '';
 
                 var postNowBtn = !isUsed 
-                    ? '<button class="btn-post-now" onclick="previsualiserPhotoUnique(\'' + p.id + '\')">✨ Aperçu</button>'
+                    ? '<button class="btn-post-now" onclick="previsualiserPhotoUnique(\'' + p.id + '\')">🛡️ Valider & Poster</button>'
                     : '<span style="font-size: 10px; color: #888;">Publiée</span>';
 
                 var noteHtml = p.note ? '<div class="photo-note">« ' + escapeHtml(p.note) + ' »</div>' : '<div class="photo-note" style="color:#999;font-style:italic;">Sans note</div>';
@@ -2128,6 +2432,7 @@
         }
 
         // Init on load
+        initPostingMode();
         loadPhotos();
     </script>
 </body>

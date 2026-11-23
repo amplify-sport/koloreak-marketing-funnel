@@ -28,125 +28,140 @@ const transporter = nodemailer.createTransport({
 // ============================================================================
 const SALON_INFOS = {
     nom: "Koloreak",
-    activite: "Salon de coiffure holistique, coloriste et bien-être capillaire",
+    activite: "Salon de coiffure bien-être, coloriste végétal et chimie douce",
     adresse: process.env.SALON_ADDRESS || "37 Rue Maubec, 64100 Bayonne",
-    telephone: process.env.SALON_PHONE || "05 35 39 51 64",
+    telephone: process.env.SALON_PHONE || "06 14 73 53 28",
     planityUrl: process.env.PLANITY_URL || "https://www.planity.com/koloreak-64100-bayonne",
+    decoration: "Murs peints en terracotta (terre cuite), rappelant directement les pigments naturels utilisés dans les colorations du salon, et mobilier en matières naturelles comme le bois chaleureux.",
+    philosophie: "Priorité absolue aux produits naturels et au respect de la santé des clientes et clients : colorations 100% végétales aux plantes tinctoriales sans produits chimiques, et couleurs raisonnées en chimie douce afin de limiter au maximum l'impact des substances chimiques sur la santé.",
     valeurs: [
-        "Coloration 100% végétale et botanique respectueuse du cheveu et de la santé",
-        "Balayages et blonds lumineux sur-mesure sans effet barre ni démarcation",
-        "Soins capillaires, massages crâniens relaxants et bien-être.",
-        "Diagnostic visagiste personnalisé et respect de la matière naturelle du cheveu",
-        "Ancrage local au Pays Basque (Bayonne), esprit chaleureux et bienveillant"
+        "Coloration 100% végétale et botanique sans aucun produit chimique",
+        "Couleur raisonnée en chimie douce pour préserver la santé des clients",
+        "Balayages et blonds lumineux sur-mesure avec dépollution de la fibre capillaire",
+        "Rituels de soins capillaires bien-être (argile sous apport thermique doux, massage crânien relaxant, Green Botox)",
+        "Ambiance chaleureuse et apaisante (murs terracotta & mobilier bois au 37 Rue Maubec à Bayonne)",
+        "Diagnostic personnalisé et respect absolu de la matière naturelle du cheveu"
     ]
 };
 
 const THEMES_MARKETING = [
     {
         id: "coloration_vegetale",
-        nom: "Coloration Végétale & Botanique",
-        description: "Mettre en avant les bienfaits des plantes tinctoriales : gainage de la fibre, brillance miroir, couverture des cheveux blancs sans abîmer, alternative saine aux colorations chimiques.",
+        nom: "Coloration Végétale & Chimie Douce",
+        description: "Mettre en avant les produits naturels : coloration 100% végétale sans produits chimiques (poudres de plantes) et couleur raisonnée en chimie douce pour limiter au maximum l'impact des produits chimiques sur la santé.",
         sujets: [
-            "Pourquoi passer à la coloration végétale : la métamorphose de votre cheveu qui retrouve force et brillance naturelle.",
-            "Couvrir ses cheveux blancs naturellement avec les poudres de plantes sans effet racine brutal ni oxydation.",
-            "Coloration végétale vs chimique : comment la couleur végétale forme un bouclier protecteur au lieu de fragiliser le cheveu.",
-            "La brillance incomparable d'une coloration 100% botanique sous la lumière du Pays Basque.",
-            "Transition capillaire : comment préparer sa chevelure pour adopter la couleur végétale en toute sérénité."
+            "Pourquoi choisir la coloration végétale : la métamorphose d'un cheveu respecté, gainé et éclatant sans aucun produit chimique.",
+            "Couvrir 100% de ses cheveux blancs naturellement avec nos protocoles en simple ou double application végétale.",
+            "Coloration raisonnée et chimie douce : comment nous limitons au maximum l'exposition aux produits chimiques pour préserver votre santé.",
+            "La brillance incomparable des poudres de plantes tinctoriales sous la belle lumière de Bayonne.",
+            "Préparer ses cheveux au végétal : diagnostic personnalisé et soin préparateur à l'argile."
         ],
         hashtags: [
-            "#Koloreak", "#ColorationVegetale", "#CoiffureNaturelle", "#CheveuxSains",
-            "#CoiffeurBayonne", "#Bayonne", "#PaysBasque", "#PlantesTinctoriales",
-            "#BeauteHolistique", "#CoiffureVegetale", "#SlowBeauty"
+            "#Koloreak", "#ColorationVegetale", "#ChimieDouce", "#CouleurRaisonnee",
+            "#CoiffeurBayonne", "#Bayonne", "#QuartierSaintEsprit", "#PaysBasque", "#PlantesTinctoriales",
+            "#CoiffureNaturelle", "#CheveuxSains", "#SanteDuCheveu"
         ],
-        typeVisuel: "Gros plan sur une chevelure brillante aux reflets cuivrés ou chocolat en lumière naturelle, bol en bois avec préparation de poudres de plantes."
+        typeVisuel: "Gros plan sur une chevelure brillante aux reflets chauds en lumière naturelle, bol avec préparation de poudres de plantes et bois naturel."
     },
     {
         id: "balayage_signature",
         nom: "Balayage & Éclaircissement Sur-Mesure",
-        description: "Sublimer la chevelure avec un fondu ultra-naturel, un blond bébé, doré ou beige, une patine gloss sur-mesure pour un résultat lumineux sans entretien contraignant.",
+        description: "Sublimer la chevelure avec un fondu ultra-naturel, dépollution de la fibre capillaire, soin réparateur et patine gloss pour un résultat lumineux sans démarcation.",
         sujets: [
             "Le secret d'un balayage lumineux sans effet racine : un fondu subtil pensé sur-mesure pour votre coupe.",
-            "Blond beige, miel ou doré : comment choisir la nuance parfaite selon votre carnation et la forme de votre visage.",
-            "Le pouvoir de la patine / gloss : redonner un éclat éclatant et neutraliser les reflets indésirables en un instant.",
-            "French balayage et mèches personnalisées : l'art de capturer la lumière sans abîmer votre fibre capillaire.",
-            "Entretenir son balayage pour qu'il reste éclatant plusieurs mois après votre passage au salon."
+            "L'étape clé de la dépollution de la fibre capillaire lors de notre forfait éclaircissement pour un blond sain et pur.",
+            "Le pouvoir de la patine / gloss : redonner un éclat miroir et neutraliser les reflets indésirables tout en douceur.",
+            "Balayage sur-mesure et soin réparateur : capter la lumière sans altérer la vitalité de vos longueurs.",
+            "Entretenir son balayage pour qu'il reste éclatant plusieurs mois après votre passage au 37 Rue Maubec."
         ],
         hashtags: [
-            "#Koloreak", "#BalayageBayonne", "#BlondSurMesure", "#FrenchBalayage",
-            "#CoiffeurBayonne", "#PaysBasque", "#BlondPolaire", "#GlossCapillaire",
+            "#Koloreak", "#BalayageBayonne", "#BlondSurMesure", "#DepollutionCapillaire",
+            "#CoiffeurBayonne", "#PaysBasque", "#GlossCapillaire", "#PatineCheveux",
             "#HairTransformation", "#ColoristeBayonne"
         ],
         typeVisuel: "Photo de dos et trois-quarts mettant en valeur un dégradé de balayage ondulé (wavy) avec une belle luminosité."
     },
     {
-        id: "Soin bien_etre",
-        nom: "Soin Capillaire Massage Crânien",
-        description: "Vivre une véritable parenthèse de détente : rituels de soins profonds, massage relaxant du cuir chevelu, stimulation de la pousse, lâcher-prise total.",
+        id: "spa_bien_etre",
+        nom: "Soin Capillaire & Massage Crânien Détente",
+        description: "Vivre une véritable parenthèse de détente et de bien-être : soins à l'argile sous apport thermique (chaleur douce), massage crânien relaxant au bac, soin Green Botox réparateur.",
         sujets: [
-            "Offrez-vous une parenthèse hors du temps : l'expérience de notre massage crânien pour libérer toutes les tensions.",
-            "Le cuir chevelu est le sol de vos cheveux : pourquoi un gommage et un soin profond changent absolument tout.",
-            "Le rituel soin capillaire chez Koloreak : quand le soin des cheveux devient un moment de relaxation holistique.",
-            "Fatigue, stress, changement de saison : le protocole idéal pour revitaliser vos racines et stimuler la vitalité.",
-            "Prendre soin de soi au cœur de Bayonne : venez  vous détendre dans notre salon et laissez vos cheveux respirer.",
-
+            "Offrez-vous une parenthèse détente au salon : l'expérience de notre massage crânien pour dénouer toutes les tensions.",
+            "Soin lumière ou argile sous chaleur douce : purifier le cuir chevelu et réhydrater intensément les longueurs.",
+            "Soin Green Botox & Détox végétale : une cure de jouvence capillaire naturelle pour réparer et fortifier la fibre.",
+            "Fatigue, changement de saison ou stress : le protocole bien-être pour revitaliser vos racines en toute sérénité.",
+            "Prendre soin de soi au cœur de Bayonne : venez vous détendre dans notre salon aux teintes terracotta et laissez vos cheveux respirer."
         ],
         hashtags: [
-            "#Koloreak", "#SpaCapillaire", "#MassageCranien", "#BienEtreBayonne",
-            "#DetenteAbsolue", "#SoinCheveux", "#CoiffureHolistique", "#BayonneMaubec",
+            "#Koloreak", "#SoinCapillaire", "#MassageCranien", "#BienEtreBayonne",
+            "#DetenteAbsolue", "#SoinArgile", "#GreenBotox", "#BayonneMaubec",
             "#PrendreSoinDeSoi", "#PaysBasque"
         ],
         typeVisuel: "Atmosphère cocooning, serviette douce, vapeur de soin, mains prodiguant un massage au bac dans une ambiance apaisante."
     },
     {
         id: "avant_apres",
-        nom: "Avant / Après & Métamorphoses",
-        description: "Présenter des métamorphoses réelles de clientes : correction de couleur, transition réussie, nouvelle coupe fraîche et dynamique.",
+        nom: "Avant / Après & Coupes Transformation",
+        description: "Présenter des métamorphoses réelles de clientes : coupe transformation, passage au végétal, nouvelle fraîcheur coupe et brushing wavy.",
         sujets: [
             "Transformation du jour : passer d'une couleur terne à un balayage éclatant plein de reflets vivants.",
             "Du long abîmé au carré structuré : oser la coupe qui valorise les traits du visage et redonne du volume.",
-            "Retrouver des cheveux forts après des années de décolorations agressives : le parcours de cette cliente chez Koloreak.",
-            "Lumière sur une métamorphose toute en subtilité : respecter la personnalité tout en révélant la beauté naturelle.",
-            "Avant / Après : le pouvoir d'une coupe texturisée et d'un gloss rafraîchissant pour dynamiser l'allure."
+            "Retrouver des cheveux sains et denses grâce à la couleur végétale et aux soins bien-être.",
+            "Lumière sur une métamorphose tout en subtilité : respecter la personnalité tout en révélant la beauté naturelle.",
+            "Avant / Après : le pouvoir d'une coupe personnalisée et d'un gloss rafraîchissant pour dynamiser l'allure."
         ],
         hashtags: [
-            "#Koloreak", "#AvantApresCoiffure", "#BeforeAndAfterHair", "#HairMakeover",
-            "#CoiffureBayonne", "#PaysBasque", "#TransformationCapillaire", "#CheveuxSains"
+            "#Koloreak", "#AvantApresCoiffure", "#BeforeAndAfterHair", "#TransformationCapillaire",
+            "#CoiffureBayonne", "#PaysBasque", "#CheveuxSains", "#CoupeFemme"
         ],
         typeVisuel: "Collage ou carrousel Avant / Après avec cadrage identique et éclairage professionnel mettant en avant la texture."
     },
     {
-        id: "conseils_experte",
-        nom: "Conseils d'Experte & Routine Maison",
-        description: "Partager des astuces de pro faciles à appliquer chez soi : fréquence des shampoings, protection thermique, brossage doux, soins naturels.",
+        id: "salon_ambiance",
+        nom: "Salon, Décoration Terracotta & Ambiance Bois",
+        description: "Partager l'atmosphère authentique et chaleureuse du salon : les murs terracotta rappelant les pigments naturels, le mobilier en bois et l'accueil bienveillant.",
         sujets: [
-            "Les 3 erreurs courantes sous la douche qui ternissent votre couleur plus vite que prévu.",
-            "Comment bien sécher ses cheveux pour préserver leur hydratation sans frisottis indésirables.",
-            "L'importance d'espacer ses shampoings et comment choisir une formule douce sans sulfates ni silicones occlusifs.",
-            "Protéger ses cheveux du vent, du sel de l'océan et des UV : le rituel indispensable au Pays Basque.",
-            "À quelle fréquence faut-il vraiment couper ses pointes pour garder une longueur dense et saine ?"
+            "Bienvenue au 37 Rue Maubec : des murs terracotta chaleureux qui font écho aux pigments naturels de nos colorations végétales.",
+            "Matières naturelles et mobilier en bois : notre écrin de détente pensé pour votre confort à Bayonne.",
+            "Une pause douceur et bien-être : poussez la porte de Koloreak pour un moment rien que pour vous.",
+            "L'harmonie des teintes terre cuite et des plantes : l'ambiance apaisante de notre salon au cœur du quartier Saint-Esprit."
         ],
         hashtags: [
-            "#Koloreak", "#AstucesCoiffure", "#ConseilsCapillaires", "#RoutineCheveux",
+            "#Koloreak", "#SalonDeCoiffureBayonne", "#Terracotta", "#MatieresNaturelles",
+            "#CoiffeurBayonne", "#BayonneMaubec", "#QuartierSaintEsprit", "#PaysBasque", "#AmbianceCocooning"
+        ],
+        typeVisuel: "Vue chaleureuse de l'intérieur du salon : murs terracotta, mobilier en bois, miroirs et plantes vertes."
+    },
+    {
+        id: "conseils_experte",
+        nom: "Conseils d'Experte & Santé du Cheveu",
+        description: "Partager des astuces professionnelles faciles pour entretenir la santé du cheveu : soins doux, espacement des lavages, protection.",
+        sujets: [
+            "Les 3 erreurs courantes sous la douche qui fragilisent la fibre et ternissent votre éclat.",
+            "Pourquoi et comment espacer ses lavages avec des shampoings doux sans sulfates agressifs.",
+            "Protéger ses cheveux du vent marin, du soleil et du sel : nos conseils bien-être au Pays Basque.",
+            "À quelle fréquence rafraîchir sa coupe ou sa frange pour conserver une matière vigoureuse ?"
+        ],
+        hashtags: [
+            "#Koloreak", "#ConseilsCapillaires", "#SanteDuCheveu", "#RoutineCheveux",
             "#CoiffeurBayonne", "#Bayonne", "#CheveuxNaturels", "#ProduitsSains"
         ],
-        typeVisuel: "Photo soignée de flacons de soins bio, brosse en bois naturelle, ou geste de coiffage appliqué sur une mèche."
+        typeVisuel: "Photo soignée de soins capillaires naturels, brosse en bois ou geste de coiffage précis."
     },
     {
         id: "agenda_dispos",
-        nom: "Disponibilités & Rendez-vous",
-        description: "Créer l'urgence bienveillante pour les réservations de fin de semaine, créneaux libres de dernière minute et fêtes.",
+        nom: "Disponibilités & Rendez-vous Planity",
+        description: "Créer l'envie et faciliter la prise de rendez-vous en ligne sur Planity pour des moments de détente et mise en beauté.",
         sujets: [
-            "Quelques créneaux disponibles cette semaine chez Koloreak pour vous chouchouter avant le week-end !",
-            "Envie d'un coup d'éclat avant un événement ou tout simplement pour vous faire plaisir ? Réservez votre créneau en 1 clic.",
-            "L'anticipation est la clé : pensez à bloquer votre rendez-vous balayage ou couleur pour briller toute la saison.",
-            "Une place s'est libérée jeudi après-midi au salon : premier arrivé, premier sublimé !",
-            "Votre moment de pause vous attend au 37 Rue Maubec à Bayonne. Prenez rendez-vous en ligne 24h/24."
+            "Envie d'un moment de détente et d'un coup d'éclat cette semaine ? Réservez votre créneau en 1 clic sur Planity.",
+            "Quelques créneaux disponibles pour votre coloration végétale, balayage ou soin massage au salon.",
+            "Votre parenthèse bien-être vous attend au 37 Rue Maubec à Bayonne. Rendez-vous en ligne 24h/24."
         ],
         hashtags: [
             "#Koloreak", "#CoiffeurBayonne", "#Planity", "#RendezVousCoiffure",
-            "#Bayonne", "#BayonneCentre", "#PaysBasque", "#SalonDeCoiffure"
+            "#Bayonne", "#BayonneMaubec", "#PaysBasque", "#SalonDeCoiffure"
         ],
-        typeVisuel: "Vue chaleureuse de l'intérieur du salon Koloreak (miroirs, fauteuils confortables, plantes vertes, ambiance lumineuse)."
+        typeVisuel: "Fauteuil confortable du salon, miroir baigné de lumière douce et espace coiffage soigné."
     }
 ];
 
@@ -401,29 +416,79 @@ NOTE SPÉCIALE CARROUSEL : Cette publication est un CARROUSEL / ALBUM de ${image
     }
 
     const defaultPrompt = `
-Tu es la gérante et coloriste passionnée du salon de coiffure holistique "${SALON_INFOS.nom}", situé au ${SALON_INFOS.adresse}.
-Ton salon est réputé pour sa bienveillance, son expertise en coloration végétale, ses balayages lumineux personnalisés et ses rituels spa du cheveu.
+Tu es la gérante et coloriste passionnée du salon de coiffure "${SALON_INFOS.nom}", situé au ${SALON_INFOS.adresse} (Quartier Saint-Esprit, Bayonne, Pays Basque).
 
-Rédige une publication Instagram percutante et chaleureuse pour le compte du salon.
+CADRE ET DÉCORATION DU SALON :
+Le salon est conçu comme un véritable cocon de douceur et d'authenticité. Les peintures des murs sont terracotta / terre cuite, un choix chaleureux qui fait directement écho aux pigments naturels utilisés dans les colorations du salon. Le mobilier fait la part belle aux matières naturelles comme le bois, pour une atmosphère lumineuse, bienveillante et reposante.
+
+LE POINT LE PLUS IMPORTANT (PHILOSOPHIE PRODUITS & RESPECT DE LA SANTÉ) :
+Le salon Koloreak travaille avec des PRODUITS NATURELS :
+1. Colorations 100% végétales aux poudres de plantes tinctoriales, SANS AUCUN PRODUIT CHIMIQUE (soin gainant, brillance pure, respect de la fibre).
+2. Couleurs raisonnées en chimie douce : pour les clientes et clients souhaitant une alternative douce, formulée pour LIMITER AU MAXIMUM L'IMPACT DES PRODUITS CHIMIQUES SUR LA SANTÉ.
+Notre mission : préserver la santé des clientes et clients, respecter la nature du cuir chevelu et sublimer la matière sans jamais l'agresser.
+
+CARTE OFFICIELLE DES PRESTATIONS DU SALON (SEULES TECHNIQUES ET PRESTATIONS EXISTANTES) :
+Ne promouvoir et ne parler QUE des prestations réelles proposées au salon :
+• COLORATION CHIMIE DOUCE OU VÉGÉTALE :
+  - Coloration végétale 100% plantes sans chimie (application racines, double application pour couverture 100% des cheveux blancs, forfait végétale express à emporter sous son bonnet chaud sans rinçage ni coiffage, diagnostic personnalisé offert si prestation).
+  - Coloration chimie douce / couleur raisonnée en racines ou tête entière avec soin profond et brushing.
+  - Suppléments : coupe associée, allongement des longueurs.
+• ÉCLAIRCISSEMENT & BALAYAGE SUR-MESURE :
+  - Éclaircissement sur mesure avec dépollution de la fibre capillaire, soin réparateur profond et brushing (courts, mi-longs, longs).
+  - Suppléments : allongement, supplément ombré, coupe associée.
+• GLOSS / PATINE / BAIN DE PLANTES :
+  - Bain de brillance et patine neutralisante avec soin traitant (courts à mi-longs, longs), coupe associée.
+• SOINS BIEN-ÊTRE CAPILLAIRE ("CHACUN SON SOIN") :
+  - Soin lumière ou argile sous apport thermique (chaleur douce) + shampoing + massage crânien relaxant au bac + soin hydratant + brushing.
+  - Soin argile express préparateur avant coloration végétale (détoxifie la fibre et ouvre les écailles).
+  - Soin Green Botox ou Green Détox (cure de jouvence capillaire végétale reconstructrice & réparatrice).
+• COUPE & MISE EN FORME FEMME :
+  - Forfaits complets : shampoing, soin, coupe et brushing (courts, mi-longs, longs ou coupe transformation).
+  - Coupe dame très courte, entretien ou création de frange.
+  - Mise en forme : brushing lisse ou wavy, supplément cheveux très épais / longs, attache ou chignon événementiel sur devis.
+  - Retouche racines instantanée express (part au prochain lavage).
+• HOMME :
+  - Shampoing relaxant, soin cuir chevelu, coupe et coiffage.
+  - Taille de barbe soignée et traçage des contours.
+  - Soin détoxifiant spécifique aux plantes ou argiles + massage crânien relaxant + coupe.
+  - Coloration homme ciblée (camoufler les tempes et zone frontale) ou tête entière en chimie douce/végétale raisonnée.
+• ENFANT / ADO :
+  - Coupes tout-petits (0 à 5 ans), juniors (5 à 12 ans) et forfaits ados (12 à 18 ans).
+
+INTERDICTIONS STRICTES ET FORMELLES (RÈGLES D'OR DU SALON) :
+1. STRICTEMENT INTERDIT DE PROMOUVOIR D'AUTRES TECHNIQUES OU PRODUITS NON PROPOSÉS AU SALON :
+   - Ne JAMAIS mentionner de lissages brésiliens ou chimiques conventionnels,
+   - Ne JAMAIS parler de permanentes chimiques traditionnelles,
+   - Ne JAMAIS évoquer d'extensions capillaires,
+   - Ne JAMAIS citer de marques de la pétrochimie ou produits décapants agressifs non utilisés au salon.
+   - Rester STRICTEMENT dans le cadre de ce qui est proposé à la carte de Koloreak.
+2. ÉVITER TOUT MESSAGE DE TYPE "HOLLISTIQUE" OU TROP SPIRITUEL :
+   - Ne JAMAIS utiliser le mot "holistique".
+   - Bannir toute dérive ésotérique, astrologique, New Age, énergies mystiques ou croyances perchées.
+   - Ne JAMAIS tomber dans le "rituel chamanique" !
+   - En revanche, METTRE EN AVANT LE BIEN-ÊTRE, LA DÉTENTE, LA RELAXATION, LE LÂCHER-PRISE et le confort d'un moment pour soi dans un cadre bienveillant.
+
+Rédige une publication Instagram percutante, chaleureuse et élégante pour le compte du salon.
 
 Thème du post : "${themeChoisi.nom}"
 Sujet précis : "${sujetDuJour}"
 ${noteInstruction}
 Lien de réservation en ligne : ${SALON_INFOS.planityUrl}
 
-RÈGLES STRICTES DE RÉDACTION INSTAGRAM :
-1. TON : Chaleureux, solaire, expert, bienveillant et authentique. Parle directement à la cliente ("vous"), crée de l'émotion et de l'envie sans jamais être agressif commercialement.
-2. ACCROCHE (Première ligne) : Une phrase forte et captivante qui interpelle la lectrice dans son fil d'actualité, accompagnée d'un emoji élégant.
+RÈGLES DE RÉDACTION INSTAGRAM :
+1. TON : Chaleureux, solaire, expert, bienveillant, orienté bien-être et santé du cheveu. Parle directement à la lectrice ("vous"), suscite l'envie sans agressivité commerciale.
+2. ACCROCHE (Première ligne) : Une phrase forte et captivante qui interpelle dans le fil d'actualité, accompagnée d'un emoji élégant (🌿, ✨, 💆‍♀️, 🤎, ☀️, ✂️).
 3. CORPS DU POST (2 à 3 paragraphes courts et aérés) :
-   - Explique concrètement le bienfait (toucher du cheveu, éclat, respect de la santé, moment de détente).
-   - Donne un conseil ou une explication d'experte facile à comprendre.
+   - Mets l'accent sur les produits naturels, la coloration végétale sans chimie ou la couleur raisonnée pour protéger la santé.
+   - Évoque si le sujet s'y prête l'ambiance chaleureuse terracotta et bois, le massage crânien relaxant au bac ou la dépollution du cheveu.
+   - Partage une explication d'experte claire, concrète et accessible.
 4. APPEL À L'ACTION (CTA) :
-   - Invite chaleureusement à réserver son créneau sur Planity (lien en bio) ou à envoyer un message privé (DM) pour un conseil personnalisé.
-   - Mentionne subtilement l'adresse ou le quartier (Rue Maubec, Bayonne).
-5. HASHTAGS : Termine impérativement par une liste de 10 à 15 hashtags pertinents, intégrant : ${hashtagsStr} #KoloreakCoiffure #BayonneMaubec
+   - Invite à réserver sur Planity (lien en bio) ou à envoyer un message privé (DM) pour un conseil personnalisé.
+   - Mentionne le salon au 37 Rue Maubec à Bayonne (Quartier Saint-Esprit).
+5. HASHTAGS : Termine impérativement par une sélection de 10 à 15 hashtags pertinents, intégrant : ${hashtagsStr} #KoloreakCoiffure #BayonneMaubec #QuartierSaintEsprit
 6. NE METS AUCUN GUILLEMET autour du texte final.
-7. Ne génère pas de balises markdown de titre (pas de # Titre), utilise des sauts de ligne naturels et des emojis adaptés au monde de la coiffure (✨, 🌿, 💆‍♀️, 🌸, ☀️, ✂️).
-8. LONGUEUR STRICTE : Reste impérativement entre 1 200 et 1 700 caractères au total. Instagram INTERDIT et BLOQUE toute légende dépassant 2 200 caractères. Sois concis, élégant et aéré.
+7. Ne génère aucune balise markdown de titre (pas de # Titre), utilise des sauts de ligne naturels et de jolis emojis.
+8. LONGUEUR STRICTE : Reste impérativement entre 1 100 et 1 650 caractères au total (Instagram bloque les légendes > 2 200 caractères).
 `;
 
     const prompt = (options.customPrompt && options.customPrompt.trim())

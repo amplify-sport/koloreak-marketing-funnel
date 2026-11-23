@@ -1,6 +1,6 @@
 # 🌿 Koloreak - Funnel Marketing & Automatisation Instagram
 
-Système d'acquisition, de fidélisation et de publication automatique sur Instagram conçu pour le salon de coiffure holistique **Koloreak** (Bayonne, Pays Basque), propulsé par **Google Gemini AI**, **Firebase Cloud Functions (v2)** et **Meta Graph API**.
+Système d'acquisition, de fidélisation et de publication automatique sur Instagram conçu pour le salon de coiffure bien-être et coloration végétale **Koloreak** (Bayonne, Pays Basque), propulsé par **Google Gemini AI**, **Firebase Cloud Functions (v2)** et **Meta Graph API**.
 
 Ce projet adapte et sublime la stratégie d'automatisation marketing de VibeCoder pour l'univers de la coiffure, du bien-être et de la coloration végétale.
 

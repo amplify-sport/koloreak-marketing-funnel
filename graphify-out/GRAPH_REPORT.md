@@ -1,17 +1,17 @@
-# Graph Report - Koloreak marketing funnel  (2026-11-22)
+# Graph Report - Koloreak marketing funnel  (2026-11-23)
 
 ## Corpus Check
-- 14 files · ~13,652 words
+- 14 files · ~16,184 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 5 file(s) not represented in the graph (top: (none) 2, .csv 1, .rules 1)
 
 ## Summary
-- 142 nodes · 166 edges · 11 communities (10 shown, 1 thin omitted)
+- 142 nodes · 166 edges · 12 communities (11 shown, 1 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 1 edges (avg confidence: 0.85)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ea4890fd`
+- Built from commit: `3fff54f8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -26,6 +26,7 @@
 - test-gemini-prompt.js
 - scripts
 - 📸 Dossier des Photos Réelles du Salon Koloreak
+- scripts
 
 ## God Nodes (most connected - your core abstractions)
 1. `scripts` - 9 edges
@@ -34,10 +35,10 @@
 4. `executerGenerationInstagram()` - 5 edges
 5. `publierSurInstagram()` - 4 edges
 6. `appSalon()` - 4 edges
-7. `@google/generative-ai` - 4 edges
-8. `loadClientsFromCsv()` - 4 edges
-9. `firebase-functions` - 3 edges
-10. `nodemailer` - 3 edges
+7. `loadClientsFromCsv()` - 4 edges
+8. `@google/generative-ai` - 4 edges
+9. `⚙️ Configuration & Installation` - 3 edges
+10. `getPortalHtml()` - 3 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `appSalon()` --calls--> `getPortalHtml()`  [EXTRACTED]
@@ -46,15 +47,15 @@
 ## Import Cycles
 - None detected.
 
-## Communities (11 total, 1 thin omitted)
+## Communities (12 total, 1 thin omitted)
 
 ### Community 0 - "index.js"
 Cohesion: 0.09
 Nodes (21): admin, appSalon(), bucket, db, executerGenerationInstagram(), genAI, getPhotoForTheme(), { GoogleGenerativeAI } (+13 more)
 
 ### Community 1 - "package.json"
-Cohesion: 0.09
-Nodes (22): author, dependencies, firebase-admin@^13.10.0, description, devDependencies, dotenv@^16.4.7, firebase-admin, keywords (+14 more)
+Cohesion: 0.16
+Nodes (13): author, dependencies, firebase-admin@^13.10.0, description, devDependencies, dotenv@^16.4.7, firebase-admin, keywords (+5 more)
 
 ### Community 2 - "functions/package.json"
 Cohesion: 0.13
@@ -88,6 +89,10 @@ Nodes (6): scripts, deploy, logs, serve, shell, start
 Cohesion: 0.50
 Nodes (3): 🚀 Comment ça marche ?, 📸 Dossier des Photos Réelles du Salon Koloreak, 📁 Organisation par thématiques :
 
+### Community 11 - "scripts"
+Cohesion: 0.22
+Nodes (9): scripts, deploy:all, deploy:firestore, deploy:functions, inject:clients, post:manual, sync:photos, test:instagram (+1 more)
+
 ## Knowledge Gaps
 - **1 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -100,11 +105,9 @@ _Questions this graph is uniquely positioned to answer:_
   _Cohesion score 0.09401709401709402 - nodes in this community are weakly interconnected._
 - **Why does `scripts` connect `scripts` to `functions/package.json`?**
   _High betweenness centrality (0.050) - this node is a cross-community bridge._
-- **Should `package.json` be split into smaller, more focused modules?**
-  _Cohesion score 0.09486166007905138 - nodes in this community are weakly interconnected._
-- **Why does `firebase-functions` connect `functions/package.json` to `index.js`?**
-  _High betweenness centrality (0.034) - this node is a cross-community bridge._
 - **Should `functions/package.json` be split into smaller, more focused modules?**
   _Cohesion score 0.13450292397660818 - nodes in this community are weakly interconnected._
+- **Why does `firebase-functions` connect `functions/package.json` to `index.js`?**
+  _High betweenness centrality (0.034) - this node is a cross-community bridge._
 - **Should `sync-photos.js` be split into smaller, more focused modules?**
   _Cohesion score 0.11695906432748537 - nodes in this community are weakly interconnected._
